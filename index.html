@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Luka HQ — Operations Center</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #070b16;
+    background: #050810;
     color: #e2e8f0;
-    font-family: 'Space Mono', monospace;
+    font-family: 'Noto Sans JP', 'Space Mono', monospace;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -21,14 +21,16 @@
   /* HUD BAR */
   #hud {
     height: 44px;
-    background: #0a0e1a;
+    background: rgba(5,8,16,0.95);
     border-bottom: 1px solid #1e3a5f;
+    border-top: 2px solid #dc2626;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
     flex-shrink: 0;
     z-index: 10;
+    backdrop-filter: blur(10px);
   }
   #hud .title {
     font-size: 14px;
@@ -36,11 +38,13 @@
     letter-spacing: 3px;
     color: #f59e0b;
     text-shadow: 0 0 12px #f59e0b88;
+    font-family: 'Noto Sans JP', sans-serif;
   }
   #hud .clock {
     font-size: 12px;
     color: #94a3b8;
     letter-spacing: 1px;
+    font-family: 'Space Mono', monospace;
   }
   #hud .sys-status {
     font-size: 11px;
@@ -49,6 +53,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    font-family: 'Space Mono', monospace;
   }
   #hud .sys-status::before {
     content: '';
@@ -68,61 +73,52 @@
     display: flex;
     flex: 1;
     overflow: hidden;
+    position: relative;
   }
 
-  /* CANVAS AREA */
+  /* THREE.JS CANVAS AREA */
   #canvas-wrap {
     flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #070b16;
     position: relative;
     overflow: hidden;
+    background: #050810;
   }
-  canvas {
+  #canvas-wrap canvas {
     display: block;
-    cursor: pointer;
-  }
-
-  /* GRID LINES background effect */
-  #canvas-wrap::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(30,58,95,0.15) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(30,58,95,0.15) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
+    width: 100%;
+    height: 100%;
   }
 
   /* RIGHT PANEL */
   #panel {
     width: 300px;
-    background: #0a0e1a;
+    background: rgba(5,8,16,0.92);
+    backdrop-filter: blur(10px);
     border-left: 1px solid #1e3a5f;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     flex-shrink: 0;
+    z-index: 5;
   }
   #panel-header {
     padding: 16px;
     border-bottom: 1px solid #1e3a5f;
-    background: #0f1629;
+    background: rgba(15,22,41,0.9);
   }
   #panel-header h2 {
     font-size: 11px;
     letter-spacing: 2px;
     color: #64748b;
     text-transform: uppercase;
+    font-family: 'Space Mono', monospace;
   }
   #panel-header h3 {
     font-size: 14px;
     color: #e2e8f0;
     margin-top: 4px;
     font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif;
   }
   #panel-body {
     flex: 1;
@@ -130,12 +126,12 @@
     padding: 12px;
   }
   #panel-body::-webkit-scrollbar { width: 4px; }
-  #panel-body::-webkit-scrollbar-track { background: #0a0e1a; }
+  #panel-body::-webkit-scrollbar-track { background: transparent; }
   #panel-body::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 2px; }
 
   /* ROOM OVERVIEW CARDS */
   .room-card {
-    background: #0f1629;
+    background: rgba(15,22,41,0.8);
     border: 1px solid #1e3a5f;
     border-radius: 6px;
     padding: 10px 12px;
@@ -143,8 +139,8 @@
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
   }
-  .room-card:hover { border-color: #3b82f6; background: #111d35; }
-  .room-card.selected { border-color: #f59e0b; background: #1a1508; }
+  .room-card:hover { border-color: #dc2626; background: rgba(30,15,15,0.6); }
+  .room-card.selected { border-color: #f59e0b; background: rgba(26,21,8,0.6); }
   .room-card-top {
     display: flex;
     align-items: center;
@@ -156,6 +152,7 @@
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
+    font-family: 'Space Mono', monospace;
   }
   .status-dot {
     width: 8px; height: 8px;
@@ -168,6 +165,7 @@
   .room-card-time {
     font-size: 9px;
     color: #475569;
+    font-family: 'Space Mono', monospace;
   }
   .room-card-summary {
     font-size: 10px;
@@ -182,6 +180,7 @@
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 4px;
+    font-family: 'Noto Sans JP', sans-serif;
   }
   #detail-view .detail-status-row {
     display: flex;
@@ -193,6 +192,7 @@
     font-size: 10px;
     letter-spacing: 1px;
     text-transform: uppercase;
+    font-family: 'Space Mono', monospace;
   }
   #detail-view .detail-lastrun {
     font-size: 10px;
@@ -200,6 +200,7 @@
     margin-bottom: 12px;
     padding-bottom: 12px;
     border-bottom: 1px solid #1e3a5f;
+    font-family: 'Space Mono', monospace;
   }
   #detail-view .detail-summary {
     font-size: 11px;
@@ -221,9 +222,9 @@
     transition: all 0.2s;
   }
   .ping-btn:hover {
-    border-color: #f59e0b;
+    border-color: #dc2626;
     color: #f59e0b;
-    background: #1a1508;
+    background: rgba(26,21,8,0.4);
   }
   .back-btn {
     background: none;
@@ -239,7 +240,7 @@
     align-items: center;
     gap: 4px;
   }
-  .back-btn:hover { color: #94a3b8; }
+  .back-btn:hover { color: #dc2626; }
 
   /* SPEECH BUBBLE */
   #speech-bubble {
@@ -250,13 +251,14 @@
     font-size: 10px;
     padding: 6px 10px;
     border-radius: 8px;
-    max-width: 160px;
+    max-width: 180px;
     line-height: 1.4;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.5s ease;
     z-index: 5;
     white-space: nowrap;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
   }
   #speech-bubble::after {
     content: '';
@@ -271,34 +273,55 @@
   /* FOOTER */
   #footer {
     height: 28px;
-    background: #0a0e1a;
+    background: rgba(5,8,16,0.95);
     border-top: 1px solid #1e3a5f;
     display: flex;
     align-items: center;
     padding: 0 20px;
     gap: 20px;
     flex-shrink: 0;
+    z-index: 10;
+    backdrop-filter: blur(10px);
   }
   #footer span {
     font-size: 9px;
     color: #334155;
     letter-spacing: 1px;
+    font-family: 'Space Mono', monospace;
   }
   #footer .live { color: #10b981; }
+
+  /* ROOM TOOLTIP on hover */
+  #room-tooltip {
+    position: absolute;
+    background: rgba(5,8,16,0.92);
+    backdrop-filter: blur(8px);
+    border: 1px solid #dc2626;
+    color: #e2e8f0;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 6;
+    white-space: nowrap;
+  }
 </style>
 </head>
 <body>
 
 <div id="hud">
-  <div class="title">⚙ LUKA HQ</div>
+  <div class="title">鳥居 LUKA HQ</div>
   <div class="clock" id="clock">--:-- -- ET</div>
   <div class="sys-status" id="sys-status">ALL SYSTEMS NOMINAL</div>
 </div>
 
 <div id="main">
   <div id="canvas-wrap">
-    <canvas id="iso" width="860" height="520"></canvas>
     <div id="speech-bubble"></div>
+    <div id="room-tooltip"></div>
   </div>
 
   <div id="panel">
@@ -307,9 +330,7 @@
       <h3 id="panel-title">LUKA HQ Overview</h3>
     </div>
     <div id="panel-body">
-      <!-- Overview cards -->
       <div id="overview-view"></div>
-      <!-- Detail view -->
       <div id="detail-view">
         <button class="back-btn" onclick="showOverview()">← back</button>
         <div class="detail-name" id="d-name"></div>
@@ -327,12 +348,24 @@
 
 <div id="footer">
   <span class="live">● LIVE</span>
-  <span>LUKA HQ v1.0</span>
+  <span>LUKA HQ v2.0 — 三次元</span>
   <span id="last-updated">Updated: —</span>
   <span>appforgelabs.github.io/LukaHQ</span>
 </div>
 
-<script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
 // ─── DATA ──────────────────────────────────────────────────────────────────────
 const DEFAULT_STATUS = {
   updated: new Date().toISOString(),
@@ -347,12 +380,12 @@ const DEFAULT_STATUS = {
 };
 
 const ROOM_META = {
-  market:     { label: 'MARKET COMMAND', color: [245, 158, 11],  desc: "Luka's trading desk. Live portfolio tracking, EOD wraps, alert generation." },
-  pulseforge: { label: 'PULSEFORGE LAB', color: [6,   182, 212], desc: 'ML macro intelligence pipeline. Sector rotation, pulse scores, watchlist data.' },
-  social:     { label: 'SOCIAL STUDIO',  color: [139, 92,  246], desc: 'Daily X posts @jigaraero. Dry, witty, no hashtags. 9 AM ET weekdays.' },
-  kidwatch:   { label: 'KIDWATCH ROOM',  color: [16,  185, 129], desc: 'YouTube watch history safety scanner. Daily report to Discord #kidwatch.' },
-  engine:     { label: 'ENGINE ROOM',    color: [249, 115, 22],  desc: '16 cron jobs, heartbeat scheduler, pipeline orchestration. The heart of HQ.' },
-  comms:      { label: 'COMMS ROOM',     color: [59,  130, 246], desc: 'Discord briefings, market alerts, EOD summaries to #stock-market.' }
+  market:     { label: 'MARKET COMMAND', color: [245, 158, 11],  hex: '#f59e0b', desc: "Luka's trading desk. Live portfolio tracking, EOD wraps, alert generation." },
+  pulseforge: { label: 'PULSEFORGE LAB', color: [6, 182, 212],   hex: '#06b6d4', desc: 'ML macro intelligence pipeline. Sector rotation, pulse scores, watchlist data.' },
+  social:     { label: 'SOCIAL STUDIO',  color: [139, 92, 246],  hex: '#8b5cf6', desc: 'Daily X posts @jigaraero. Dry, witty, no hashtags. 9 AM ET weekdays.' },
+  kidwatch:   { label: 'KIDWATCH ROOM',  color: [16, 185, 129],  hex: '#10b981', desc: 'YouTube watch history safety scanner. Daily report to Discord #kidwatch.' },
+  engine:     { label: 'ENGINE ROOM',    color: [249, 115, 22],  hex: '#f97316', desc: '16 cron jobs, heartbeat scheduler, pipeline orchestration. The heart of HQ.' },
+  comms:      { label: 'COMMS ROOM',     color: [59, 130, 246],  hex: '#3b82f6', desc: 'Discord briefings, market alerts, EOD summaries to #stock-market.' }
 };
 
 const SPEECH_LINES = [
@@ -369,434 +402,809 @@ const SPEECH_LINES = [
 
 let statusData = DEFAULT_STATUS;
 let selectedRoom = null;
-let hoveredRoom = null;
 
-// ─── ISO LAYOUT ────────────────────────────────────────────────────────────────
-// Isometric tile: 160px wide, 80px tall
-// 6 rooms: 3 per floor, 2 floors
-// Canvas origin: top-left. We'll position the building centered.
+// ─── THREE.JS SETUP ────────────────────────────────────────────────────────────
+const container = document.getElementById('canvas-wrap');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x050810);
+scene.fog = new THREE.FogExp2(0x050810, 0.015);
 
-const TW = 160; // tile width
-const TH = 80;  // tile height (half of TW for 2:1 ratio)
-const TZ = 90;  // wall height in pixels
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+camera.position.set(12, 10, 12);
+camera.lookAt(0, 0, 0);
 
-// Isometric math: grid (col, row, floor) → screen (x, y)
-function isoToScreen(col, row, floor, ox, oy) {
-  const sx = ox + (col - row) * (TW / 2);
-  const sy = oy + (col + row) * (TH / 2) - floor * TZ;
-  return { x: sx, y: sy };
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+container.appendChild(renderer.domElement);
+
+// Controls
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.4;
+controls.minPolarAngle = Math.PI / 6;
+controls.maxPolarAngle = Math.PI / 2.2;
+controls.target.set(0, 0, 0);
+controls.minDistance = 6;
+controls.maxDistance = 25;
+
+let autoRotateTimeout = null;
+function pauseAutoRotate() {
+  controls.autoRotate = false;
+  clearTimeout(autoRotateTimeout);
+  autoRotateTimeout = setTimeout(() => { controls.autoRotate = true; }, 5000);
+}
+controls.addEventListener('start', pauseAutoRotate);
+
+// Resize handler
+function onResize() {
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener('resize', onResize);
+onResize();
+
+// ─── LIGHTS ────────────────────────────────────────────────────────────────────
+// Moonlight - cool blue from above-left
+const moonLight = new THREE.DirectionalLight(0x4466aa, 0.6);
+moonLight.position.set(-8, 15, 5);
+moonLight.castShadow = true;
+moonLight.shadow.mapSize.set(2048, 2048);
+moonLight.shadow.camera.near = 0.5;
+moonLight.shadow.camera.far = 50;
+moonLight.shadow.camera.left = -15;
+moonLight.shadow.camera.right = 15;
+moonLight.shadow.camera.top = 15;
+moonLight.shadow.camera.bottom = -15;
+scene.add(moonLight);
+
+// Ambient fill
+const ambientLight = new THREE.AmbientLight(0x111122, 0.3);
+scene.add(ambientLight);
+
+// Hemisphere for subtle sky/ground bounce
+const hemiLight = new THREE.HemisphereLight(0x0a0a30, 0x0a0e1a, 0.2);
+scene.add(hemiLight);
+
+// ─── MATERIALS ─────────────────────────────────────────────────────────────────
+const DARK_ROOF = 0x1a1a2e;
+const GROUND_COLOR = 0x0d0d18;
+const GRAVEL_COLOR = 0x1a1a28;
+
+function wallMaterial(color) {
+  return new THREE.MeshStandardMaterial({
+    color: color,
+    metalness: 0.1,
+    roughness: 0.8,
+  });
 }
 
-// Room grid positions [col, row] — 3 wide × 2 deep
-const ROOM_GRID = {
-  //          col  row  floor
-  market:     [0,  0,   1],
-  pulseforge: [1,  0,   1],
-  social:     [2,  0,   1],
-  kidwatch:   [0,  1,   0],
-  engine:     [1,  1,   0],
-  comms:      [2,  1,   0]
+function roofMaterial() {
+  return new THREE.MeshStandardMaterial({
+    color: DARK_ROOF,
+    metalness: 0.3,
+    roughness: 0.6,
+  });
+}
+
+function windowMaterial(color) {
+  return new THREE.MeshStandardMaterial({
+    color: color,
+    emissive: color,
+    emissiveIntensity: 0.8,
+    metalness: 0.0,
+    roughness: 0.3,
+    transparent: true,
+    opacity: 0.9,
+  });
+}
+
+function lanternMaterial() {
+  return new THREE.MeshStandardMaterial({
+    color: 0xffaa44,
+    emissive: 0xffaa44,
+    emissiveIntensity: 1.0,
+    metalness: 0.0,
+    roughness: 0.4,
+  });
+}
+
+// ─── GROUND ────────────────────────────────────────────────────────────────────
+const groundGeo = new THREE.PlaneGeometry(30, 30);
+const groundMat = new THREE.MeshStandardMaterial({
+  color: GROUND_COLOR,
+  metalness: 0.2,
+  roughness: 0.9,
+});
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -0.01;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// Grid lines on ground
+const gridSize = 30;
+const gridDivisions = 30;
+const gridPoints = [];
+for (let i = -gridSize / 2; i <= gridSize / 2; i += gridSize / gridDivisions) {
+  gridPoints.push(new THREE.Vector3(i, 0.001, -gridSize / 2));
+  gridPoints.push(new THREE.Vector3(i, 0.001, gridSize / 2));
+  gridPoints.push(new THREE.Vector3(-gridSize / 2, 0.001, i));
+  gridPoints.push(new THREE.Vector3(gridSize / 2, 0.001, i));
+}
+const gridGeo = new THREE.BufferGeometry().setFromPoints(gridPoints);
+const gridMat = new THREE.LineBasicMaterial({ color: 0x1e3a5f, transparent: true, opacity: 0.12 });
+const gridLines = new THREE.LineSegments(gridGeo, gridMat);
+scene.add(gridLines);
+
+// Gravel paths - lighter tone rectangles
+function createPath(x, z, w, d) {
+  const geo = new THREE.PlaneGeometry(w, d);
+  const mat = new THREE.MeshStandardMaterial({ color: GRAVEL_COLOR, roughness: 0.95, metalness: 0.1 });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.x = -Math.PI / 2;
+  mesh.position.set(x, 0.005, z);
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+}
+// Main paths connecting buildings
+createPath(0, 0, 2, 12);    // north-south center
+createPath(0, 0, 12, 2);    // east-west center
+createPath(-3.5, 3, 5, 1.5);  // path to front buildings
+createPath(3.5, 3, 5, 1.5);
+
+// ─── TORII GATE ────────────────────────────────────────────────────────────────
+const toriiColor = 0xcc2222;
+const toriiMat = new THREE.MeshStandardMaterial({ color: toriiColor, metalness: 0.2, roughness: 0.6 });
+
+function createTorii(x, z, scale = 1) {
+  const group = new THREE.Group();
+  // Two vertical pillars
+  const pillarGeo = new THREE.BoxGeometry(0.15 * scale, 2.2 * scale, 0.15 * scale);
+  const leftPillar = new THREE.Mesh(pillarGeo, toriiMat);
+  leftPillar.position.set(-0.6 * scale, 1.1 * scale, 0);
+  leftPillar.castShadow = true;
+  group.add(leftPillar);
+
+  const rightPillar = new THREE.Mesh(pillarGeo, toriiMat);
+  rightPillar.position.set(0.6 * scale, 1.1 * scale, 0);
+  rightPillar.castShadow = true;
+  group.add(rightPillar);
+
+  // Top horizontal beam (kasagi) - slightly curved up at ends
+  const topBeamGeo = new THREE.BoxGeometry(1.8 * scale, 0.12 * scale, 0.2 * scale);
+  const topBeam = new THREE.Mesh(topBeamGeo, toriiMat);
+  topBeam.position.set(0, 2.2 * scale, 0);
+  topBeam.castShadow = true;
+  group.add(topBeam);
+
+  // Second beam (nuki)
+  const nukiGeo = new THREE.BoxGeometry(1.4 * scale, 0.08 * scale, 0.12 * scale);
+  const nuki = new THREE.Mesh(nukiGeo, toriiMat);
+  nuki.position.set(0, 1.8 * scale, 0);
+  group.add(nuki);
+
+  group.position.set(x, 0, z);
+  scene.add(group);
+  return group;
+}
+
+// Main entrance torii
+createTorii(0, 7, 1.2);
+// Engine room mini torii
+createTorii(0, 3.8, 0.6);
+
+// ─── BUILDING CREATION ─────────────────────────────────────────────────────────
+const buildings = {};
+const buildingMeshes = []; // for raycasting
+const windowMeshes = []; // for flickering
+const lanternLights = []; // for pulsing
+
+// Building positions in the compound
+const BUILDING_POS = {
+  market:     { x: 0,    z: -3.5, w: 3.5, h: 2.0, d: 2.5 },  // center-back, largest
+  pulseforge: { x: -4.5, z: -1.5, w: 2.5, h: 1.8, d: 2.0 },  // left
+  social:     { x: 4.5,  z: -1.5, w: 2.5, h: 1.8, d: 2.0 },  // right
+  kidwatch:   { x: -4,   z: 3,    w: 2.0, h: 1.4, d: 1.8 },  // front-left small
+  engine:     { x: 0,    z: 2.2,  w: 2.5, h: 1.6, d: 2.0 },  // front-center
+  comms:      { x: 4,    z: 3,    w: 2.0, h: 1.6, d: 1.8 },  // front-right
 };
 
-// Canvas and rendering
-const canvas = document.getElementById('iso');
-const ctx = canvas.getContext('2d');
-const ORIGIN_X = canvas.width / 2;
-const ORIGIN_Y = 300;
+const BUILDING_COLORS = {
+  market:     0x2a1f0a,
+  pulseforge: 0x0a1a2a,
+  social:     0x1a0a2a,
+  kidwatch:   0x0a2a1a,
+  engine:     0x2a1a0a,
+  comms:      0x0a1a2a,
+};
 
-// Animation state
-let frame = 0;
-let lukaY = 0; // bob offset
+const WINDOW_COLORS = {
+  market:     0xf59e0b,
+  pulseforge: 0x06b6d4,
+  social:     0x8b5cf6,
+  kidwatch:   0x10b981,
+  engine:     0xf97316,
+  comms:      0x3b82f6,
+};
 
-// ─── DRAW HELPERS ──────────────────────────────────────────────────────────────
-function hexToRgb(hex) {
-  const r = parseInt(hex.slice(1,3),16);
-  const g = parseInt(hex.slice(3,5),16);
-  const b = parseInt(hex.slice(5,7),16);
-  return [r,g,b];
-}
+function createBuilding(id) {
+  const pos = BUILDING_POS[id];
+  const group = new THREE.Group();
+  group.userData.roomId = id;
 
-function rgba([r,g,b], a) {
-  return `rgba(${r},${g},${b},${a})`;
-}
+  // Main body
+  const bodyGeo = new THREE.BoxGeometry(pos.w, pos.h, pos.d);
+  const bodyMat = wallMaterial(BUILDING_COLORS[id]);
+  const body = new THREE.Mesh(bodyGeo, bodyMat);
+  body.position.y = pos.h / 2;
+  body.castShadow = true;
+  body.receiveShadow = true;
+  body.userData.roomId = id;
+  group.add(body);
+  buildingMeshes.push(body);
 
-function lighten([r,g,b], f) {
-  return `rgb(${Math.min(255,r+f)},${Math.min(255,g+f)},${Math.min(255,b+f)})`;
-}
-function darken([r,g,b], f) {
-  return `rgb(${Math.max(0,r-f)},${Math.max(0,g-f)},${Math.max(0,b-f)})`;
-}
+  // Roof - overhanging, dark charcoal
+  const roofOverhang = 0.4;
+  const roofH = 0.15;
+  const roofGeo = new THREE.BoxGeometry(pos.w + roofOverhang * 2, roofH, pos.d + roofOverhang * 2);
+  const rMat = roofMaterial();
+  const roof = new THREE.Mesh(roofGeo, rMat);
+  roof.position.y = pos.h + roofH / 2;
+  roof.castShadow = true;
+  roof.userData.roomId = id;
+  group.add(roof);
+  buildingMeshes.push(roof);
 
-// Draw one isometric box (top + left wall + right wall)
-function drawIsoBox(col, row, floor, color, highlight, selected) {
-  const top    = isoToScreen(col,   row,   floor+1, ORIGIN_X, ORIGIN_Y);
-  const topR   = isoToScreen(col+1, row,   floor+1, ORIGIN_X, ORIGIN_Y);
-  const topB   = isoToScreen(col+1, row+1, floor+1, ORIGIN_X, ORIGIN_Y);
-  const topL   = isoToScreen(col,   row+1, floor+1, ORIGIN_X, ORIGIN_Y);
-  const botL   = isoToScreen(col,   row+1, floor,   ORIGIN_X, ORIGIN_Y);
-  const botB   = isoToScreen(col+1, row+1, floor,   ORIGIN_X, ORIGIN_Y);
-  const botR   = isoToScreen(col+1, row,   floor,   ORIGIN_X, ORIGIN_Y);
+  // Second roof tier (peaked) for visual interest
+  const peakW = pos.w * 0.7;
+  const peakH = 0.35;
+  const peakGeo = new THREE.BoxGeometry(peakW, peakH, pos.d + 0.1);
+  const peakMat = roofMaterial();
+  const peak = new THREE.Mesh(peakGeo, peakMat);
+  peak.position.y = pos.h + roofH + peakH / 2;
+  peak.castShadow = true;
+  peak.userData.roomId = id;
+  group.add(peak);
+  buildingMeshes.push(peak);
 
-  const glowAlpha = highlight ? 0.35 : selected ? 0.2 : 0;
+  // Teal edge highlights on roof
+  const edgeGeo = new THREE.BoxGeometry(pos.w + roofOverhang * 2 + 0.05, 0.02, pos.d + roofOverhang * 2 + 0.05);
+  const edgeMat = new THREE.MeshStandardMaterial({ color: 0x1a5a5a, emissive: 0x0a3a3a, emissiveIntensity: 0.3 });
+  const edge = new THREE.Mesh(edgeGeo, edgeMat);
+  edge.position.y = pos.h + roofH + 0.01;
+  group.add(edge);
 
-  // Right face (darkest)
-  ctx.beginPath();
-  ctx.moveTo(topR.x, topR.y);
-  ctx.lineTo(topB.x, topB.y);
-  ctx.lineTo(botB.x, botB.y);
-  ctx.lineTo(botR.x, botR.y);
-  ctx.closePath();
-  ctx.fillStyle = darken(color, 60);
-  ctx.fill();
-  if (glowAlpha > 0) {
-    ctx.fillStyle = `rgba(255,255,255,${glowAlpha * 0.5})`;
-    ctx.fill();
-  }
-  ctx.strokeStyle = highlight || selected ? `rgb(${color[0]},${color[1]},${color[2]})` : 'rgba(255,255,255,0.08)';
-  ctx.lineWidth = highlight || selected ? 1.5 : 0.5;
-  ctx.stroke();
+  // Glowing windows on front face
+  const winColor = WINDOW_COLORS[id];
+  const winCount = Math.max(1, Math.floor(pos.w / 0.9));
+  const winW = 0.35;
+  const winH = 0.5;
+  const winSpacing = pos.w / (winCount + 1);
 
-  // Left face (medium)
-  ctx.beginPath();
-  ctx.moveTo(top.x, top.y);
-  ctx.lineTo(topL.x, topL.y);
-  ctx.lineTo(botL.x, botL.y);
-  ctx.lineTo(botR.x, botR.y); // fix: connect bottom correctly
-  // left face: top -> topL -> botL -> botR? No:
-  // left wall: top-left edge
-  ctx.closePath();
-  // Redo left face properly
-  ctx.beginPath();
-  ctx.moveTo(top.x, top.y);
-  ctx.lineTo(topL.x, topL.y);
-  ctx.lineTo(botL.x, botL.y);
-  ctx.lineTo(isoToScreen(col, row, floor, ORIGIN_X, ORIGIN_Y).x, isoToScreen(col, row, floor, ORIGIN_X, ORIGIN_Y).y);
-  ctx.closePath();
-  ctx.fillStyle = darken(color, 30);
-  ctx.fill();
-  if (glowAlpha > 0) {
-    ctx.fillStyle = `rgba(255,255,255,${glowAlpha * 0.3})`;
-    ctx.fill();
-  }
-  ctx.strokeStyle = highlight || selected ? `rgb(${color[0]},${color[1]},${color[2]})` : 'rgba(255,255,255,0.08)';
-  ctx.lineWidth = highlight || selected ? 1.5 : 0.5;
-  ctx.stroke();
-
-  // Top face (lightest)
-  ctx.beginPath();
-  ctx.moveTo(top.x, top.y);
-  ctx.lineTo(topR.x, topR.y);
-  ctx.lineTo(topB.x, topB.y);
-  ctx.lineTo(topL.x, topL.y);
-  ctx.closePath();
-  ctx.fillStyle = lighten(color, 20);
-  ctx.fill();
-  if (glowAlpha > 0) {
-    ctx.fillStyle = `rgba(255,255,255,${glowAlpha})`;
-    ctx.fill();
-  }
-  ctx.strokeStyle = highlight || selected ? `rgb(${color[0]},${color[1]},${color[2]})` : 'rgba(255,255,255,0.12)';
-  ctx.lineWidth = highlight || selected ? 2 : 0.5;
-  ctx.stroke();
-
-  // Selected glow border
-  if (selected) {
-    ctx.beginPath();
-    ctx.moveTo(top.x, top.y);
-    ctx.lineTo(topR.x, topR.y);
-    ctx.lineTo(topB.x, topB.y);
-    ctx.lineTo(topL.x, topL.y);
-    ctx.closePath();
-    ctx.strokeStyle = `rgba(${color[0]},${color[1]},${color[2]},0.8)`;
-    ctx.lineWidth = 2.5;
-    ctx.stroke();
+  for (let i = 0; i < winCount; i++) {
+    const winGeo = new THREE.PlaneGeometry(winW, winH);
+    const winMat = windowMaterial(winColor);
+    const win = new THREE.Mesh(winGeo, winMat);
+    win.position.set(
+      -pos.w / 2 + winSpacing * (i + 1),
+      pos.h * 0.5,
+      pos.d / 2 + 0.01
+    );
+    group.add(win);
+    windowMeshes.push({ mesh: win, roomId: id, baseIntensity: 0.8 });
   }
 
-  return { top, topR, topB, topL }; // return top face corners for furniture placement
+  // Windows on back face
+  for (let i = 0; i < winCount; i++) {
+    const winGeo = new THREE.PlaneGeometry(winW, winH);
+    const winMat = windowMaterial(winColor);
+    const win = new THREE.Mesh(winGeo, winMat);
+    win.position.set(
+      -pos.w / 2 + winSpacing * (i + 1),
+      pos.h * 0.5,
+      -pos.d / 2 - 0.01
+    );
+    win.rotation.y = Math.PI;
+    group.add(win);
+    windowMeshes.push({ mesh: win, roomId: id, baseIntensity: 0.8 });
+  }
+
+  // Side windows
+  const sideWinCount = Math.max(1, Math.floor(pos.d / 1.0));
+  const sideSpacing = pos.d / (sideWinCount + 1);
+  for (let i = 0; i < sideWinCount; i++) {
+    // Left side
+    const winGeoL = new THREE.PlaneGeometry(winW, winH);
+    const winMatL = windowMaterial(winColor);
+    const winL = new THREE.Mesh(winGeoL, winMatL);
+    winL.position.set(-pos.w / 2 - 0.01, pos.h * 0.5, -pos.d / 2 + sideSpacing * (i + 1));
+    winL.rotation.y = -Math.PI / 2;
+    group.add(winL);
+    windowMeshes.push({ mesh: winL, roomId: id, baseIntensity: 0.8 });
+
+    // Right side
+    const winGeoR = new THREE.PlaneGeometry(winW, winH);
+    const winMatR = windowMaterial(winColor);
+    const winR = new THREE.Mesh(winGeoR, winMatR);
+    winR.position.set(pos.w / 2 + 0.01, pos.h * 0.5, -pos.d / 2 + sideSpacing * (i + 1));
+    winR.rotation.y = Math.PI / 2;
+    group.add(winR);
+    windowMeshes.push({ mesh: winR, roomId: id, baseIntensity: 0.8 });
+  }
+
+  // Paper lantern above entrance
+  const lanternGeo = new THREE.SphereGeometry(0.18, 8, 6);
+  const lanternMat_ = lanternMaterial();
+  const lantern = new THREE.Mesh(lanternGeo, lanternMat_);
+  lantern.position.set(0, pos.h + 0.6, pos.d / 2 + 0.3);
+  group.add(lantern);
+
+  // Lantern string
+  const stringGeo = new THREE.CylinderGeometry(0.01, 0.01, 0.3);
+  const stringMat = new THREE.MeshBasicMaterial({ color: 0x333333 });
+  const string = new THREE.Mesh(stringGeo, stringMat);
+  string.position.set(0, pos.h + 0.8, pos.d / 2 + 0.3);
+  group.add(string);
+
+  // Point light from lantern
+  const lanternLight = new THREE.PointLight(WINDOW_COLORS[id], 1.5, 4, 2);
+  lanternLight.position.set(0, pos.h + 0.5, pos.d / 2 + 0.3);
+  lanternLight.castShadow = false; // perf
+  group.add(lanternLight);
+  lanternLights.push({ light: lanternLight, baseIntensity: 1.5 });
+
+  // Interior glow point light
+  const interiorLight = new THREE.PointLight(WINDOW_COLORS[id], 0.8, 5, 2);
+  interiorLight.position.set(0, pos.h * 0.5, 0);
+  group.add(interiorLight);
+  lanternLights.push({ light: interiorLight, baseIntensity: 0.8 });
+
+  group.position.set(pos.x, 0, pos.z);
+  scene.add(group);
+  buildings[id] = group;
+
+  return group;
 }
 
-// Draw a status dot on the top face
-function drawStatusDot(cx, cy, status) {
-  const colors = { active: '#10b981', idle: '#f59e0b', error: '#ef4444' };
-  const c = colors[status] || '#64748b';
-  const pulse = status === 'active' ? 0.5 + 0.5 * Math.sin(frame * 0.05) : 1;
-  ctx.beginPath();
-  ctx.arc(cx, cy, 5 * pulse, 0, Math.PI * 2);
-  ctx.fillStyle = c;
-  ctx.fill();
-  if (status === 'active') {
-    ctx.beginPath();
-    ctx.arc(cx, cy, 8 * pulse, 0, Math.PI * 2);
-    ctx.fillStyle = c + '44';
-    ctx.fill();
+// Create all buildings
+for (const id of Object.keys(BUILDING_POS)) {
+  createBuilding(id);
+}
+
+// ─── SPECIAL BUILDING DETAILS ──────────────────────────────────────────────────
+
+// Social Studio: Purple paper lanterns
+function addPaperLanterns(building, color, count) {
+  const pos = BUILDING_POS['social'];
+  for (let i = 0; i < count; i++) {
+    const lanternGeo = new THREE.SphereGeometry(0.12, 6, 4);
+    const lMat = new THREE.MeshStandardMaterial({
+      color: color,
+      emissive: color,
+      emissiveIntensity: 0.6,
+    });
+    const l = new THREE.Mesh(lanternGeo, lMat);
+    const angle = (i / count) * Math.PI * 2;
+    l.position.set(
+      Math.cos(angle) * (pos.w / 2 + 0.3),
+      pos.h + 0.3 + Math.sin(i * 1.3) * 0.2,
+      Math.sin(angle) * (pos.d / 2 + 0.3)
+    );
+    building.add(l);
+  }
+}
+addPaperLanterns(buildings['social'], 0x8b5cf6, 6);
+
+// Comms Room: Antenna mast
+function createAntenna(building) {
+  const pos = BUILDING_POS['comms'];
+  const mastGeo = new THREE.CylinderGeometry(0.03, 0.05, 2.5);
+  const mastMat = new THREE.MeshStandardMaterial({ color: 0x444466, metalness: 0.8, roughness: 0.3 });
+  const mast = new THREE.Mesh(mastGeo, mastMat);
+  mast.position.set(0, pos.h + 1.5, 0);
+  mast.castShadow = true;
+  building.add(mast);
+
+  // Antenna tip light
+  const tipGeo = new THREE.SphereGeometry(0.06, 6, 6);
+  const tipMat = new THREE.MeshStandardMaterial({
+    color: 0x3b82f6,
+    emissive: 0x3b82f6,
+    emissiveIntensity: 2.0,
+  });
+  const tip = new THREE.Mesh(tipGeo, tipMat);
+  tip.position.set(0, pos.h + 2.8, 0);
+  building.add(tip);
+
+  // Radial arms
+  for (let i = 0; i < 3; i++) {
+    const armGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.6);
+    const arm = new THREE.Mesh(armGeo, mastMat);
+    arm.rotation.z = Math.PI / 2;
+    arm.rotation.y = (i / 3) * Math.PI;
+    arm.position.set(0, pos.h + 2.2, 0);
+    building.add(arm);
+  }
+
+  return tip;
+}
+const antennaTip = createAntenna(buildings['comms']);
+
+// Engine Room: Rotating gear
+const gearGroup = new THREE.Group();
+const gearPos = BUILDING_POS['engine'];
+
+// Torus gear
+const gearGeo = new THREE.TorusGeometry(0.4, 0.08, 6, 8);
+const gearMat = new THREE.MeshStandardMaterial({
+  color: 0xf97316,
+  emissive: 0xf97316,
+  emissiveIntensity: 0.3,
+  metalness: 0.7,
+  roughness: 0.3,
+});
+const gear = new THREE.Mesh(gearGeo, gearMat);
+gear.rotation.x = Math.PI / 2;
+gearGroup.add(gear);
+
+// Gear teeth (small boxes around the torus)
+for (let i = 0; i < 8; i++) {
+  const angle = (i / 8) * Math.PI * 2;
+  const toothGeo = new THREE.BoxGeometry(0.1, 0.1, 0.06);
+  const tooth = new THREE.Mesh(toothGeo, gearMat);
+  tooth.position.set(Math.cos(angle) * 0.48, Math.sin(angle) * 0.48, 0);
+  tooth.rotation.z = angle;
+  gearGroup.add(tooth);
+}
+
+gearGroup.position.set(gearPos.x + gearPos.w / 2 + 0.3, gearPos.h * 0.7, gearPos.z);
+scene.add(gearGroup);
+
+// ─── LUKA FOX CHARACTER ────────────────────────────────────────────────────────
+const lukaGroup = new THREE.Group();
+const foxColor = 0xf59e0b;
+const foxMat = new THREE.MeshStandardMaterial({
+  color: foxColor,
+  emissive: foxColor,
+  emissiveIntensity: 0.15,
+  metalness: 0.0,
+  roughness: 0.7,
+});
+const foxLightMat = new THREE.MeshStandardMaterial({
+  color: 0xfbbf24,
+  emissive: 0xfbbf24,
+  emissiveIntensity: 0.1,
+  metalness: 0.0,
+  roughness: 0.7,
+});
+
+// Body
+const bodyGeo = new THREE.BoxGeometry(0.45, 0.55, 0.35);
+const foxBody = new THREE.Mesh(bodyGeo, foxMat);
+foxBody.position.y = 0.35;
+foxBody.castShadow = true;
+lukaGroup.add(foxBody);
+
+// Head
+const headGeo = new THREE.BoxGeometry(0.4, 0.35, 0.32);
+const foxHead = new THREE.Mesh(headGeo, foxLightMat);
+foxHead.position.y = 0.78;
+foxHead.castShadow = true;
+lukaGroup.add(foxHead);
+
+// Ears (triangular prisms using ConeGeometry)
+const earGeo = new THREE.ConeGeometry(0.08, 0.22, 4);
+const leftEar = new THREE.Mesh(earGeo, foxMat);
+leftEar.position.set(-0.12, 1.06, 0);
+leftEar.rotation.z = -0.15;
+lukaGroup.add(leftEar);
+
+const rightEar = new THREE.Mesh(earGeo, foxMat);
+rightEar.position.set(0.12, 1.06, 0);
+rightEar.rotation.z = 0.15;
+lukaGroup.add(rightEar);
+
+// Eyes
+const eyeMat = new THREE.MeshBasicMaterial({ color: 0x0a0e1a });
+const eyeGeo = new THREE.SphereGeometry(0.04, 6, 6);
+const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
+leftEye.position.set(-0.09, 0.82, 0.16);
+lukaGroup.add(leftEye);
+const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
+rightEye.position.set(0.09, 0.82, 0.16);
+lukaGroup.add(rightEye);
+
+// Nose
+const noseMat = new THREE.MeshBasicMaterial({ color: 0x1a1a1a });
+const noseGeo = new THREE.SphereGeometry(0.025, 4, 4);
+const nose = new THREE.Mesh(noseGeo, noseMat);
+nose.position.set(0, 0.76, 0.17);
+lukaGroup.add(nose);
+
+// Tail
+const tailGeo = new THREE.BoxGeometry(0.12, 0.12, 0.35);
+const tail = new THREE.Mesh(tailGeo, foxLightMat);
+tail.position.set(0, 0.45, -0.3);
+tail.rotation.x = -0.4;
+lukaGroup.add(tail);
+
+const mktPos = BUILDING_POS['market'];
+lukaGroup.position.set(mktPos.x, 0, mktPos.z + mktPos.d / 2 + 0.8);
+scene.add(lukaGroup);
+
+// Small glow under Luka
+const lukaLight = new THREE.PointLight(0xf59e0b, 0.5, 3, 2);
+lukaLight.position.copy(lukaGroup.position);
+lukaLight.position.y = 0.5;
+scene.add(lukaLight);
+
+// ─── CHERRY BLOSSOM PARTICLES ──────────────────────────────────────────────────
+const PETAL_COUNT = 200;
+const petalPositions = new Float32Array(PETAL_COUNT * 3);
+const petalColors = new Float32Array(PETAL_COUNT * 3);
+const petalPhases = new Float32Array(PETAL_COUNT); // for varied animation
+const petalSpeeds = new Float32Array(PETAL_COUNT);
+
+for (let i = 0; i < PETAL_COUNT; i++) {
+  petalPositions[i * 3] = (Math.random() - 0.5) * 24;
+  petalPositions[i * 3 + 1] = Math.random() * 12;
+  petalPositions[i * 3 + 2] = (Math.random() - 0.5) * 24;
+  petalPhases[i] = Math.random() * Math.PI * 2;
+  petalSpeeds[i] = 0.3 + Math.random() * 0.7;
+
+  // Pink/white colors
+  const pink = Math.random() > 0.3;
+  if (pink) {
+    petalColors[i * 3] = 1.0;
+    petalColors[i * 3 + 1] = 0.72 + Math.random() * 0.15;
+    petalColors[i * 3 + 2] = 0.77 + Math.random() * 0.15;
+  } else {
+    petalColors[i * 3] = 0.95 + Math.random() * 0.05;
+    petalColors[i * 3 + 1] = 0.92 + Math.random() * 0.05;
+    petalColors[i * 3 + 2] = 0.95 + Math.random() * 0.05;
   }
 }
 
-// Draw room label above box
-function drawLabel(text, x, y, color, selected) {
-  ctx.font = `700 9px 'Space Mono', monospace`;
-  ctx.textAlign = 'center';
-  const alpha = selected ? 1 : 0.7;
-  ctx.fillStyle = `rgba(${color[0]},${color[1]},${color[2]},${alpha})`;
-  ctx.fillText(text, x, y - 8);
-}
+const petalGeo = new THREE.BufferGeometry();
+petalGeo.setAttribute('position', new THREE.BufferAttribute(petalPositions, 3));
+petalGeo.setAttribute('color', new THREE.BufferAttribute(petalColors, 3));
 
-// Draw Luka character (fox-ish amber blob)
-function drawLuka(topFace, bobOffset) {
-  const cx = (topFace.top.x + topFace.topR.x + topFace.topB.x + topFace.topL.x) / 4;
-  const cy = (topFace.top.y + topFace.topR.y + topFace.topB.y + topFace.topL.y) / 4 - 20 + bobOffset;
+const petalMat = new THREE.PointsMaterial({
+  size: 0.08,
+  vertexColors: true,
+  transparent: true,
+  opacity: 0.7,
+  sizeAttenuation: true,
+});
+const petals = new THREE.Points(petalGeo, petalMat);
+scene.add(petals);
 
-  // Body
-  ctx.beginPath();
-  ctx.ellipse(cx, cy + 8, 9, 12, 0, 0, Math.PI * 2);
-  ctx.fillStyle = '#f59e0b';
-  ctx.fill();
+// ─── RAYCASTING & INTERACTION ──────────────────────────────────────────────────
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let hoveredBuilding = null;
+const tooltip = document.getElementById('room-tooltip');
 
-  // Head
-  ctx.beginPath();
-  ctx.arc(cx, cy - 4, 8, 0, Math.PI * 2);
-  ctx.fillStyle = '#fbbf24';
-  ctx.fill();
-
-  // Ears
-  ctx.beginPath();
-  ctx.moveTo(cx - 6, cy - 10);
-  ctx.lineTo(cx - 10, cy - 18);
-  ctx.lineTo(cx - 2, cy - 13);
-  ctx.fillStyle = '#f59e0b';
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(cx + 6, cy - 10);
-  ctx.lineTo(cx + 10, cy - 18);
-  ctx.lineTo(cx + 2, cy - 13);
-  ctx.fill();
-
-  // Eyes (2 dots)
-  ctx.fillStyle = '#0a0e1a';
-  ctx.beginPath(); ctx.arc(cx - 3, cy - 5, 1.5, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(cx + 3, cy - 5, 1.5, 0, Math.PI*2); ctx.fill();
-
-  // Gear badge
-  ctx.font = '9px serif';
-  ctx.fillText('⚙', cx + 7, cy - 12);
-
-  // Return head position for speech bubble
-  return { x: cx, y: cy - 22 };
-}
-
-// Draw PulseBot (cyan bouncing dot)
-function drawPulseBot(topFace) {
-  const cx = (topFace.top.x + topFace.topR.x + topFace.topB.x + topFace.topL.x) / 4 + 10;
-  const cy = (topFace.top.y + topFace.topR.y + topFace.topB.y + topFace.topL.y) / 4 - 18 + Math.sin(frame * 0.08) * 5;
-  const r = 10;
-  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
-  ctx.fillStyle = '#06b6d4';
-  ctx.fill();
-  ctx.beginPath(); ctx.arc(cx, cy, r + 4 + Math.sin(frame * 0.05) * 3, 0, Math.PI*2);
-  ctx.strokeStyle = 'rgba(6,182,212,0.3)';
-  ctx.lineWidth = 1;
-  ctx.stroke();
-  ctx.font = '8px serif'; ctx.textAlign = 'center';
-  ctx.fillStyle = '#0a0e1a'; ctx.fillText('PB', cx, cy + 3);
-}
-
-// Draw KidWatcher (green rounded square)
-function drawKidWatcher(topFace) {
-  const cx = (topFace.top.x + topFace.topR.x + topFace.topB.x + topFace.topL.x) / 4;
-  const cy = (topFace.top.y + topFace.topR.y + topFace.topB.y + topFace.topL.y) / 4 - 18;
-  const walk = Math.sin(frame * 0.03) * 8;
-  const x = cx + walk;
-  ctx.beginPath();
-  ctx.roundRect(x - 9, cy - 9, 18, 18, 4);
-  ctx.fillStyle = '#10b981';
-  ctx.fill();
-  ctx.font = '8px serif'; ctx.textAlign = 'center';
-  ctx.fillStyle = '#0a0e1a'; ctx.fillText('KW', x, cy + 3);
-}
-
-// Draw Cronos (orange rotating gear)
-function drawCronos(topFace) {
-  const cx = (topFace.top.x + topFace.topR.x + topFace.topB.x + topFace.topL.x) / 4;
-  const cy = (topFace.top.y + topFace.topR.y + topFace.topB.y + topFace.topL.y) / 4 - 18;
-  const angle = frame * 0.02;
-  const teeth = 8, r = 10, innerR = 7, toothH = 4;
-
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.rotate(angle);
-
-  // Gear teeth
-  ctx.beginPath();
-  for (let i = 0; i < teeth; i++) {
-    const a1 = (i / teeth) * Math.PI * 2 - Math.PI / teeth;
-    const a2 = a1 + Math.PI / teeth;
-    const a3 = a2 + Math.PI / teeth * 0.2;
-    const a4 = (i + 1) / teeth * Math.PI * 2 - Math.PI / teeth * 0.2;
-    if (i === 0) ctx.moveTo(Math.cos(a1) * r, Math.sin(a1) * r);
-    ctx.lineTo(Math.cos(a1) * (r + toothH), Math.sin(a1) * (r + toothH));
-    ctx.lineTo(Math.cos(a2) * (r + toothH), Math.sin(a2) * (r + toothH));
-    ctx.lineTo(Math.cos(a3) * r, Math.sin(a3) * r);
-    ctx.lineTo(Math.cos(a4) * r, Math.sin(a4) * r);
+// Store original emissive intensities
+const originalEmissives = new Map();
+buildingMeshes.forEach(mesh => {
+  if (mesh.material && mesh.material.emissiveIntensity !== undefined) {
+    originalEmissives.set(mesh, mesh.material.emissiveIntensity);
   }
-  ctx.closePath();
-  ctx.fillStyle = '#f97316';
-  ctx.fill();
+});
 
-  ctx.beginPath(); ctx.arc(0, 0, innerR, 0, Math.PI * 2);
-  ctx.fillStyle = '#0a0e1a'; ctx.fill();
-  ctx.strokeStyle = '#f97316'; ctx.lineWidth = 1.5; ctx.stroke();
+function getHoveredRoom(event) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-  ctx.restore();
-}
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(buildingMeshes);
 
-// ─── HIT DETECTION ────────────────────────────────────────────────────────────
-// Check if point (px,py) is inside the top rhombus of a room
-function pointInTopFace(px, py, col, row, floor) {
-  const top  = isoToScreen(col,   row,   floor+1, ORIGIN_X, ORIGIN_Y);
-  const topR = isoToScreen(col+1, row,   floor+1, ORIGIN_X, ORIGIN_Y);
-  const topB = isoToScreen(col+1, row+1, floor+1, ORIGIN_X, ORIGIN_Y);
-  const topL = isoToScreen(col,   row+1, floor+1, ORIGIN_X, ORIGIN_Y);
-
-  // Check whole box top down (include walls) - use bounding box approach
-  const minY = Math.min(top.y, isoToScreen(col, row, floor, ORIGIN_X, ORIGIN_Y).y);
-  const maxY = Math.max(topB.y, isoToScreen(col+1, row+1, floor, ORIGIN_X, ORIGIN_Y).y);
-  const minX = Math.min(top.x, topL.x, isoToScreen(col, row, floor, ORIGIN_X, ORIGIN_Y).x);
-  const maxX = Math.max(topR.x, topB.x, isoToScreen(col+1, row+1, floor, ORIGIN_X, ORIGIN_Y).x);
-
-  return px >= minX && px <= maxX && py >= minY && py <= maxY;
-}
-
-function getRoomAtPoint(px, py) {
-  // Check floor 1 first (front), then floor 2 (back) — front rooms take priority
-  const order = ['kidwatch', 'engine', 'comms', 'market', 'pulseforge', 'social'];
-  for (const id of order) {
-    const [col, row, floor] = ROOM_GRID[id];
-    if (pointInTopFace(px, py, col, row, floor)) return id;
+  if (intersects.length > 0) {
+    return intersects[0].object.userData.roomId;
   }
   return null;
 }
 
-// ─── MAIN DRAW ────────────────────────────────────────────────────────────────
-let lukaHeadPos = { x: 0, y: 0 };
+renderer.domElement.addEventListener('mousemove', (event) => {
+  const roomId = getHoveredRoom(event);
 
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  frame++;
-
-  const bobOffset = Math.sin(frame * 0.04) * 2.5;
-
-  // Draw order: back rooms first (floor 1 back rows, then floor 2, then floor 1 front)
-  // Painter's algorithm: sort by col+row ascending (furthest first)
-  const drawOrder = [
-    ['social',     false],
-    ['pulseforge', false],
-    ['market',     false],
-    ['comms',      false],
-    ['engine',     false],
-    ['kidwatch',   false],
-  ];
-
-  const topFaces = {};
-
-  for (const [id] of drawOrder) {
-    const [col, row, floor] = ROOM_GRID[id];
-    const color = ROOM_META[id].color;
-    const isHovered = hoveredRoom === id;
-    const isSelected = selectedRoom === id;
-    const tf = drawIsoBox(col, row, floor, color, isHovered, isSelected);
-    topFaces[id] = tf;
-
-    // Status dot on top face
-    const cx = (tf.top.x + tf.topR.x + tf.topB.x + tf.topL.x) / 4;
-    const cy = (tf.top.y + tf.topR.y + tf.topB.y + tf.topL.y) / 4;
-    const roomStatus = statusData.rooms[id]?.status || 'idle';
-    drawStatusDot(cx, cy + 5, roomStatus);
-
-    // Room label
-    drawLabel(ROOM_META[id].label, cx, tf.top.y, color, isSelected);
+  // Reset previous hover
+  if (hoveredBuilding && hoveredBuilding !== roomId && hoveredBuilding !== selectedRoom) {
+    setBuildingHighlight(hoveredBuilding, false);
   }
 
-  // Draw characters (on top of boxes)
-  lukaHeadPos = drawLuka(topFaces['market'], bobOffset);
-  drawPulseBot(topFaces['pulseforge']);
-  drawKidWatcher(topFaces['kidwatch']);
-  drawCronos(topFaces['engine']);
+  hoveredBuilding = roomId;
 
-  // Position speech bubble
-  positionSpeechBubble(lukaHeadPos);
+  if (roomId) {
+    renderer.domElement.style.cursor = 'pointer';
+    if (roomId !== selectedRoom) {
+      setBuildingHighlight(roomId, true);
+    }
+    // Show tooltip
+    tooltip.textContent = ROOM_META[roomId].label;
+    tooltip.style.opacity = '1';
+    tooltip.style.left = (event.clientX - container.getBoundingClientRect().left + 12) + 'px';
+    tooltip.style.top = (event.clientY - container.getBoundingClientRect().top - 30) + 'px';
+  } else {
+    renderer.domElement.style.cursor = 'default';
+    tooltip.style.opacity = '0';
+  }
+});
+
+renderer.domElement.addEventListener('mouseleave', () => {
+  if (hoveredBuilding && hoveredBuilding !== selectedRoom) {
+    setBuildingHighlight(hoveredBuilding, false);
+  }
+  hoveredBuilding = null;
+  tooltip.style.opacity = '0';
+  renderer.domElement.style.cursor = 'default';
+});
+
+renderer.domElement.addEventListener('click', (event) => {
+  const roomId = getHoveredRoom(event);
+  if (roomId) {
+    // Deselect previous
+    if (selectedRoom && selectedRoom !== roomId) {
+      setBuildingHighlight(selectedRoom, false);
+    }
+    selectedRoom = roomId;
+    setBuildingHighlight(roomId, true, true);
+    showDetail(roomId);
+  }
+});
+
+function setBuildingHighlight(roomId, highlight, isSelected = false) {
+  const building = buildings[roomId];
+  if (!building) return;
+
+  building.traverse(child => {
+    if (child.isMesh && child.material) {
+      if (highlight || isSelected) {
+        child.material.emissive = child.material.emissive || new THREE.Color(0x000000);
+        if (!child.material._originalEmissive) {
+          child.material._originalEmissive = child.material.emissive.clone();
+          child.material._originalEmissiveIntensity = child.material.emissiveIntensity;
+        }
+        const winColor = new THREE.Color(WINDOW_COLORS[roomId]);
+        child.material.emissive.copy(winColor);
+        child.material.emissiveIntensity = isSelected ? 0.4 : 0.2;
+      } else {
+        if (child.material._originalEmissive) {
+          child.material.emissive.copy(child.material._originalEmissive);
+          child.material.emissiveIntensity = child.material._originalEmissiveIntensity;
+        }
+      }
+    }
+  });
 }
 
-// ─── SPEECH BUBBLE ───────────────────────────────────────────────────────────
-const bubble = document.getElementById('speech-bubble');
+// ─── SPEECH BUBBLE ─────────────────────────────────────────────────────────────
+const bubbleEl = document.getElementById('speech-bubble');
 let bubbleIdx = 0;
 let bubbleVisible = false;
 
-function positionSpeechBubble(pos) {
+function positionSpeechBubble() {
   if (!bubbleVisible) return;
-  const canvasRect = canvas.getBoundingClientRect();
-  const wrapRect = document.getElementById('canvas-wrap').getBoundingClientRect();
-  // Canvas might be scaled, get actual rendered size
-  const scaleX = canvasRect.width / canvas.width;
-  const scaleY = canvasRect.height / canvas.height;
-  const bx = canvasRect.left - wrapRect.left + pos.x * scaleX - bubble.offsetWidth / 2;
-  const by = canvasRect.top - wrapRect.top + pos.y * scaleY - bubble.offsetHeight - 6;
-  bubble.style.left = bx + 'px';
-  bubble.style.top = by + 'px';
+  // Project Luka's head position to screen
+  const headWorldPos = new THREE.Vector3(
+    lukaGroup.position.x,
+    1.3 + lukaGroup.position.y,
+    lukaGroup.position.z
+  );
+  headWorldPos.project(camera);
+
+  const rect = renderer.domElement.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+  const x = ((headWorldPos.x + 1) / 2) * rect.width + rect.left - containerRect.left;
+  const y = ((-headWorldPos.y + 1) / 2) * rect.height + rect.top - containerRect.top;
+
+  bubbleEl.style.left = (x - bubbleEl.offsetWidth / 2) + 'px';
+  bubbleEl.style.top = (y - bubbleEl.offsetHeight - 10) + 'px';
 }
 
 function nextBubble() {
-  bubble.style.opacity = '0';
+  bubbleEl.style.opacity = '0';
   setTimeout(() => {
-    bubble.textContent = SPEECH_LINES[bubbleIdx % SPEECH_LINES.length];
+    bubbleEl.textContent = SPEECH_LINES[bubbleIdx % SPEECH_LINES.length];
     bubbleIdx++;
     bubbleVisible = true;
-    bubble.style.opacity = '1';
+    bubbleEl.style.opacity = '1';
     setTimeout(() => {
-      bubble.style.opacity = '0';
+      bubbleEl.style.opacity = '0';
       setTimeout(() => { bubbleVisible = false; }, 500);
     }, 4000);
   }, 500);
 }
-
-// Start speech bubble cycle
 setTimeout(nextBubble, 2000);
 setInterval(nextBubble, 9000);
 
-// ─── ANIMATION LOOP ──────────────────────────────────────────────────────────
-function loop() {
-  draw();
-  requestAnimationFrame(loop);
-}
-loop();
+// ─── ANIMATION LOOP ────────────────────────────────────────────────────────────
+const clock = new THREE.Clock();
 
-// ─── MOUSE INTERACTION ───────────────────────────────────────────────────────
-canvas.addEventListener('mousemove', e => {
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-  const px = (e.clientX - rect.left) * scaleX;
-  const py = (e.clientY - rect.top) * scaleY;
-  const room = getRoomAtPoint(px, py);
-  hoveredRoom = room;
-  canvas.style.cursor = room ? 'pointer' : 'default';
-});
+function animate() {
+  requestAnimationFrame(animate);
+  const elapsed = clock.getElapsedTime();
+  const delta = clock.getDelta();
 
-canvas.addEventListener('mouseleave', () => { hoveredRoom = null; });
+  controls.update();
 
-canvas.addEventListener('click', e => {
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-  const px = (e.clientX - rect.left) * scaleX;
-  const py = (e.clientY - rect.top) * scaleY;
-  const room = getRoomAtPoint(px, py);
-  if (room) {
-    selectedRoom = room;
-    showDetail(room);
+  // Luka bob + head tilt
+  lukaGroup.position.y = Math.sin(elapsed * 1.5) * 0.05;
+  foxHead.rotation.y = Math.sin(elapsed * 0.8) * 0.15;
+  tail.rotation.x = -0.4 + Math.sin(elapsed * 2) * 0.1;
+
+  // Lantern light pulse
+  for (const ll of lanternLights) {
+    ll.light.intensity = ll.baseIntensity * (0.8 + 0.2 * Math.sin(elapsed * 2 + ll.baseIntensity));
   }
-});
 
-// ─── PANEL ───────────────────────────────────────────────────────────────────
+  // Window flicker for active rooms
+  for (const w of windowMeshes) {
+    const roomStatus = statusData.rooms[w.roomId]?.status;
+    if (roomStatus === 'active') {
+      w.mesh.material.emissiveIntensity = w.baseIntensity + Math.sin(elapsed * 3 + Math.random() * 0.05) * 0.15;
+    }
+  }
+
+  // Antenna tip pulse
+  if (antennaTip) {
+    antennaTip.material.emissiveIntensity = 1.0 + Math.sin(elapsed * 4) * 1.0;
+    antennaTip.scale.setScalar(0.8 + Math.sin(elapsed * 4) * 0.3);
+  }
+
+  // Rotating gear
+  gearGroup.rotation.y = elapsed * 0.8;
+
+  // Cherry blossom drift
+  const posArr = petals.geometry.attributes.position.array;
+  for (let i = 0; i < PETAL_COUNT; i++) {
+    const idx = i * 3;
+    // Horizontal drift (sine wave)
+    posArr[idx] += Math.sin(elapsed * 0.5 + petalPhases[i]) * 0.003 * petalSpeeds[i];
+    posArr[idx + 2] += Math.cos(elapsed * 0.4 + petalPhases[i]) * 0.002 * petalSpeeds[i];
+    // Fall down slowly
+    posArr[idx + 1] -= 0.005 * petalSpeeds[i];
+    // Reset when below ground
+    if (posArr[idx + 1] < -0.5) {
+      posArr[idx] = (Math.random() - 0.5) * 24;
+      posArr[idx + 1] = 8 + Math.random() * 4;
+      posArr[idx + 2] = (Math.random() - 0.5) * 24;
+    }
+  }
+  petals.geometry.attributes.position.needsUpdate = true;
+
+  // Position speech bubble
+  positionSpeechBubble();
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+// ─── PANEL LOGIC ───────────────────────────────────────────────────────────────
+window.showOverview = function() {
+  selectedRoom = null;
+  // Deselect all buildings
+  for (const id of Object.keys(buildings)) {
+    setBuildingHighlight(id, false);
+  }
+  document.getElementById('panel-title').textContent = 'LUKA HQ Overview';
+  document.getElementById('overview-view').style.display = 'block';
+  document.getElementById('detail-view').style.display = 'none';
+  buildOverview();
+};
+
 function buildOverview() {
   const el = document.getElementById('overview-view');
   el.innerHTML = '';
@@ -806,10 +1214,17 @@ function buildOverview() {
     const data = statusData.rooms[id] || { status: 'idle', lastRun: '—', summary: '—' };
     const card = document.createElement('div');
     card.className = 'room-card' + (selectedRoom === id ? ' selected' : '');
-    card.onclick = () => { selectedRoom = id; showDetail(id); };
+    card.onclick = () => {
+      if (selectedRoom && selectedRoom !== id) {
+        setBuildingHighlight(selectedRoom, false);
+      }
+      selectedRoom = id;
+      setBuildingHighlight(id, true, true);
+      showDetail(id);
+    };
     card.innerHTML = `
       <div class="room-card-top">
-        <span class="room-card-name" style="color:rgb(${meta.color.join(',')})">${meta.label}</span>
+        <span class="room-card-name" style="color:${meta.hex}">${meta.label}</span>
         <span class="status-dot status-${data.status}"></span>
       </div>
       <div class="room-card-time">Last: ${data.lastRun}</div>
@@ -818,6 +1233,7 @@ function buildOverview() {
   }
 }
 
+window.showDetail = showDetail;
 function showDetail(id) {
   const meta = ROOM_META[id];
   const data = statusData.rooms[id] || { status: 'idle', lastRun: '—', summary: '—' };
@@ -826,7 +1242,7 @@ function showDetail(id) {
 
   document.getElementById('panel-title').textContent = meta.label;
   document.getElementById('d-name').textContent = meta.label;
-  document.getElementById('d-name').style.color = `rgb(${meta.color.join(',')})`;
+  document.getElementById('d-name').style.color = meta.hex;
   document.getElementById('d-dot').className = `status-dot status-${data.status}`;
   document.getElementById('d-status').textContent = statusLabel;
   document.getElementById('d-status').style.color = statusColor;
@@ -840,15 +1256,7 @@ function showDetail(id) {
   document.getElementById('detail-view').style.display = 'block';
 }
 
-function showOverview() {
-  selectedRoom = null;
-  document.getElementById('panel-title').textContent = 'LUKA HQ Overview';
-  document.getElementById('overview-view').style.display = 'block';
-  document.getElementById('detail-view').style.display = 'none';
-  buildOverview();
-}
-
-// ─── CLOCK ────────────────────────────────────────────────────────────────────
+// ─── CLOCK ─────────────────────────────────────────────────────────────────────
 function updateClock() {
   const now = new Date();
   const et = new Intl.DateTimeFormat('en-US', {
@@ -861,7 +1269,7 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// ─── STATUS DATA ──────────────────────────────────────────────────────────────
+// ─── STATUS DATA ───────────────────────────────────────────────────────────────
 function loadStatus() {
   fetch('./status.json?t=' + Date.now())
     .then(r => r.json())
@@ -871,8 +1279,6 @@ function loadStatus() {
       document.getElementById('last-updated').textContent =
         'Updated: ' + updated.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit' }) + ' ET';
 
-      // Update sys-status
-      const allActive = Object.values(data.rooms).every(r => r.status !== 'error');
       const hasError = Object.values(data.rooms).some(r => r.status === 'error');
       const sysEl = document.getElementById('sys-status');
       if (hasError) {
@@ -886,14 +1292,12 @@ function loadStatus() {
       buildOverview();
     })
     .catch(() => {
-      buildOverview(); // use defaults
+      buildOverview();
     });
 }
 
 loadStatus();
-setInterval(loadStatus, 60000); // refresh every minute
-
-// Initial panel build
+setInterval(loadStatus, 60000);
 buildOverview();
 </script>
 </body>
