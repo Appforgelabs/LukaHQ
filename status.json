@@ -1,0 +1,11 @@
+{
+  "updated": "2026-03-24T20:00:00Z",
+  "rooms": {
+    "market":    { "status": "active", "lastRun": "4:06 PM ET", "summary": "EOD wrap complete. Portfolio -0.89%. SOFI -$97, RIVN short +$14, TSLA +$19." },
+    "pulseforge":{ "status": "active", "lastRun": "6:00 PM ET", "summary": "Daily pipeline ran. SPY -0.40%. Data synced to GitHub Pages." },
+    "social":    { "status": "idle",   "lastRun": "9:14 AM ET", "summary": "X post sent: PLTR down 24% YTD — getting interesting." },
+    "kidwatch":  { "status": "idle",   "lastRun": "8:00 PM ET", "summary": "90 videos scanned. All clear. No flagged content." },
+    "engine":    { "status": "active", "lastRun": "ongoing",    "summary": "16 cron jobs scheduled and running. Heartbeat every 30 min." },
+    "comms":     { "status": "active", "lastRun": "4:06 PM ET", "summary": "EOD brief sent to #stock-market. 2 position decisions pending." }
+  }
+}
