@@ -6,705 +6,688 @@
 <title>Luka HQ — Pixel Ops Center</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-/* ══════════ RESET & BASE ══════════ */
 *{margin:0;padding:0;box-sizing:border-box}
 body{
   background:#0a0a14;
-  color:#e2e8f0;
-  font-family:'Press Start 2P',monospace;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   height:100vh;
   overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  image-rendering:pixelated;
+  font-family:'Press Start 2P',monospace;
 }
-
-/* ══════════ CRT SCANLINE OVERLAY ══════════ */
-body::after{
-  content:'';
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:9999;
-  background:repeating-linear-gradient(
-    0deg,
-    transparent 0px,
-    transparent 2px,
-    rgba(0,0,0,0.08) 2px,
-    rgba(0,0,0,0.08) 4px
-  );
-  animation:scanline 8s linear infinite;
-}
-@keyframes scanline{
-  0%{background-position:0 0}
-  100%{background-position:0 400px}
-}
-
-/* ══════════ MAIN AREA ══════════ */
-#scene{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  overflow:hidden;
-}
-
-/* ══════════ ISO GRID CONTAINER ══════════ */
-#iso-grid{
-  position:relative;
-  width:900px;
-  height:600px;
-}
-
-/* ══════════ ROOM BASE ══════════ */
-.room{
+#wrap{position:relative;width:900px;height:600px}
+canvas{display:block;image-rendering:pixelated}
+#tooltip{
   position:absolute;
-  width:260px;
-  height:200px;
-  cursor:pointer;
-  transition:filter 0.2s;
-}
-.room:hover{filter:brightness(1.3)}
-.room:hover .room-tooltip{opacity:1;transform:translateY(-4px)}
-
-/* Room positions — cross/plus layout */
-.room--trading   {left:80px;  top:20px}
-.room--machine   {left:520px; top:20px}
-.room--command   {left:300px; top:190px}
-.room--comms     {left:80px;  top:360px}
-.room--kidwatch  {left:520px; top:360px}
-
-/* ══════════ ISO FLOOR ══════════ */
-.room-floor{
-  position:absolute;
-  bottom:0;
-  left:50%;
-  width:180px;
-  height:180px;
-  transform:translateX(-50%) rotateX(60deg) rotateZ(45deg);
-  border:3px solid rgba(255,255,255,0.08);
-  box-shadow:0 0 20px rgba(0,0,0,0.5);
-}
-.room--trading  .room-floor{background:#1a2e1a;border-color:#2d5a2d44}
-.room--machine  .room-floor{background:#2e2415;border-color:#5a3d1544}
-.room--command  .room-floor{background:#2e1515;border-color:#5a151544}
-.room--comms    .room-floor{background:#151a2e;border-color:#15305a44}
-.room--kidwatch .room-floor{background:#231530;border-color:#3d155a44}
-
-/* Floor tile grid lines */
-.room-floor::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:
-    repeating-linear-gradient(90deg,rgba(255,255,255,0.04) 0px,rgba(255,255,255,0.04) 1px,transparent 1px,transparent 36px),
-    repeating-linear-gradient(0deg,rgba(255,255,255,0.04) 0px,rgba(255,255,255,0.04) 1px,transparent 1px,transparent 36px);
-}
-
-/* ══════════ ROOM LABEL ══════════ */
-.room-label{
-  position:absolute;
-  top:6px;
-  left:50%;
-  transform:translateX(-50%);
-  text-align:center;
-  white-space:nowrap;
-}
-.room-name{
-  font-size:7px;
-  letter-spacing:1px;
-  text-transform:uppercase;
-  margin-bottom:4px;
-}
-.room--trading  .room-name{color:#4ade80}
-.room--machine  .room-name{color:#fb923c}
-.room--command  .room-name{color:#f87171}
-.room--comms    .room-name{color:#60a5fa}
-.room--kidwatch .room-name{color:#c084fc}
-
-/* ══════════ STATUS BADGE ══════════ */
-.room-badge{
-  display:inline-block;
-  font-size:5px;
-  padding:2px 6px;
-  border-radius:2px;
-  letter-spacing:1px;
-  text-transform:uppercase;
-}
-.room-badge::before{content:'● '}
-.badge-active{background:#16a34a33;color:#4ade80;animation:pulse-badge 2s infinite}
-.badge-idle{background:#a3a3a322;color:#a3a3a3}
-.badge-error{background:#dc262633;color:#f87171;animation:pulse-badge 1s infinite}
-@keyframes pulse-badge{
-  0%,100%{opacity:1}
-  50%{opacity:0.5}
-}
-
-/* ══════════ ROOM SUMMARY ══════════ */
-.room-summary{
-  position:absolute;
-  bottom:46px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:5px;
-  color:#94a3b8;
-  text-align:center;
-  width:220px;
-  line-height:1.6;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-/* ══════════ TOOLTIP ══════════ */
-.room-tooltip{
-  position:absolute;
-  top:-10px;
-  left:50%;
-  transform:translateX(-50%) translateY(0);
-  background:#1a1a2e;
-  border:2px solid;
-  padding:6px 10px;
-  font-size:5px;
-  line-height:1.8;
+  display:none;
+  background:#1a1a2eee;
+  border:2px solid #4a4a6a;
   color:#cbd5e1;
-  width:240px;
-  text-align:center;
-  opacity:0;
+  font-family:'Press Start 2P',monospace;
+  font-size:7px;
+  padding:8px 12px;
+  line-height:1.8;
   pointer-events:none;
-  transition:all 0.2s;
-  z-index:100;
   white-space:normal;
+  width:260px;
+  z-index:10;
 }
-.room--trading  .room-tooltip{border-color:#4ade8044}
-.room--machine  .room-tooltip{border-color:#fb923c44}
-.room--command  .room-tooltip{border-color:#f8717144}
-.room--comms    .room-tooltip{border-color:#60a5fa44}
-.room--kidwatch .room-tooltip{border-color:#c084fc44}
-
-/* ══════════ PIXEL FURNITURE ══════════ */
-.furniture{position:absolute;bottom:30px;left:50%;transform:translateX(-50%)}
-.pixel-desk{
-  width:32px;height:16px;
-  background:#5c4a32;
-  border:2px solid #3d3222;
-  position:absolute;
-  image-rendering:pixelated;
-}
-.pixel-monitor{
-  width:14px;height:10px;
-  border:2px solid #555;
-  position:absolute;
-  image-rendering:pixelated;
-}
-.pixel-monitor::after{
-  content:'';position:absolute;
-  bottom:-4px;left:50%;transform:translateX(-50%);
-  width:4px;height:4px;background:#444;
-}
-
-/* Trading: 2 desks + 3 monitors (green screens) */
-.room--trading .furn-desk1{left:-30px;bottom:0}
-.room--trading .furn-desk2{left:10px;bottom:0}
-.room--trading .furn-mon1{left:-24px;bottom:18px;background:#0a2e0a;border-color:#2d5a2d}
-.room--trading .furn-mon2{left:-6px;bottom:18px;background:#0a2e0a;border-color:#2d5a2d}
-.room--trading .furn-mon3{left:16px;bottom:18px;background:#0a2e0a;border-color:#2d5a2d}
-
-/* Machine Shop: workbench + printer */
-.room--machine .furn-bench{left:-20px;bottom:0;width:44px;background:#4a3a22;border-color:#3d2e18}
-.room--machine .furn-printer{left:30px;bottom:0;width:18px;height:20px;background:#3a3a3a;border:2px solid #555}
-.room--machine .furn-printer::before{content:'';position:absolute;top:2px;left:2px;width:10px;height:4px;background:#fb923c55}
-
-/* Command: big desk + 2 large monitors */
-.room--command .furn-desk1{left:-22px;bottom:0;width:48px;background:#4a2222;border-color:#3d1818}
-.room--command .furn-mon1{left:-16px;bottom:18px;width:18px;height:12px;background:#1a0a0a;border-color:#5a2d2d}
-.room--command .furn-mon2{left:8px;bottom:18px;width:18px;height:12px;background:#1a0a0a;border-color:#5a2d2d}
-
-/* Comms: desk + antenna */
-.room--comms .furn-desk1{left:-16px;bottom:0}
-.room--comms .furn-mon1{left:-10px;bottom:18px;background:#0a0a2e;border-color:#2d2d5a}
-.room--comms .furn-antenna{position:absolute;left:28px;bottom:0;width:4px;height:30px;background:#60a5fa55}
-.room--comms .furn-antenna::before{content:'';position:absolute;top:0;left:-3px;width:10px;height:4px;background:#60a5fa88;border-radius:50%}
-
-/* KidWatch: desk + screen */
-.room--kidwatch .furn-desk1{left:-16px;bottom:0;background:#3a2244;border-color:#2e1838}
-.room--kidwatch .furn-mon1{left:-10px;bottom:18px;width:16px;height:12px;background:#1a0a2e;border-color:#5a2d8a}
-.room--kidwatch .furn-shield{position:absolute;left:22px;bottom:4px;width:12px;height:14px;background:#c084fc33;border:2px solid #c084fc55;border-radius:0 0 6px 6px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)}
-
-/* ══════════ FOX CHARACTER — 16x16 CSS PIXEL ART ══════════ */
-#fox{
-  position:absolute;
-  z-index:50;
-  transition:left 1.5s ease-in-out, top 1.5s ease-in-out;
-}
-#fox-sprite{
-  width:48px;height:48px;
-  position:relative;
-  animation:fox-bob 0.4s ease-in-out infinite alternate;
-}
-@keyframes fox-bob{
-  0%{transform:translateY(0)}
-  100%{transform:translateY(-3px)}
-}
-
-/* 16x16 pixel grid — each cell is 3px */
-.fox-grid{
-  display:grid;
-  grid-template-columns:repeat(16,3px);
-  grid-template-rows:repeat(16,3px);
-  image-rendering:pixelated;
-}
-.fp{width:3px;height:3px}
-/* Fox colors */
-.f-o{background:#e87b35} /* orange fur */
-.f-d{background:#c45e1a} /* dark orange */
-.f-w{background:#f5f0e0} /* white belly */
-.f-e{background:#1a1a2e} /* dark (ears, eyes) */
-.f-n{background:#2a1a0a} /* nose */
-.f-g{background:#f5c842} /* goggle yellow */
-.f-t{background:#d4722a} /* tail mid */
-.f-l{background:#f5deb3} /* tail tip light */
-.f-x{background:transparent}
-
-/* ══════════ BOTTOM HUD BAR ══════════ */
-#hud{
-  height:52px;
-  background:#0d0d1a;
-  border-top:3px solid #1a1a3a;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 16px;
-  flex-shrink:0;
-  z-index:100;
-  gap:8px;
-}
-
-/* HUD Left */
-#hud-left{
-  display:flex;
-  align-items:center;
-  gap:4px;
-  font-size:8px;
-  color:#f59e0b;
-  text-shadow:0 0 8px #f59e0b66;
-  white-space:nowrap;
-}
-.blink-cursor{animation:blink 1s step-end infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-
-/* HUD Center — bars */
-#hud-center{
-  display:flex;
-  align-items:center;
-  gap:16px;
-  flex:1;
-  justify-content:center;
-}
-.hud-bar{
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.hud-bar-label{
-  font-size:5px;
-  color:#94a3b8;
-  letter-spacing:1px;
-  min-width:20px;
-}
-.hud-bar-track{
-  width:80px;
-  height:10px;
-  background:#1a1a2e;
-  border:2px solid #2a2a4a;
-  position:relative;
-  overflow:hidden;
-}
-.hud-bar-fill{
-  height:100%;
-  width:0%;
-  transition:width 1.5s ease-out;
-}
-.hud-bar-value{
-  font-size:5px;
-  color:#e2e8f0;
-  min-width:50px;
-}
-
-/* Market status */
-#market-status{
-  font-size:6px;
-  padding:3px 8px;
-  border-radius:2px;
-  letter-spacing:1px;
-}
-.market-open{background:#16a34a33;color:#4ade80;border:1px solid #16a34a55}
-.market-closed{background:#dc262622;color:#f87171;border:1px solid #dc262644}
-
-/* HUD Right — links */
-#hud-right{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.hud-link{
-  font-size:6px;
-  text-decoration:none;
-  padding:3px 6px;
-  border:1px solid #2a2a4a;
-  border-radius:2px;
-  transition:all 0.2s;
-  white-space:nowrap;
-}
-.hud-link:hover{background:#2a2a4a;border-color:#4a4a6a}
-.hud-link-lf{color:#4ade80}
-.hud-link-pf{color:#fb923c}
-.hud-link-kw{color:#c084fc}
-.hud-link-st{color:#fbbf24}
-
-/* Timestamp & stale */
-#hud-time{
-  font-size:5px;
-  color:#64748b;
-  text-align:right;
-  line-height:1.6;
-  min-width:80px;
-}
-.stale-warn{color:#f59e0b !important;animation:pulse-badge 2s infinite}
-
-/* ══════════ CONNECTING LINES (hallways) ══════════ */
-.hallway{
-  position:absolute;
-  background:repeating-linear-gradient(
-    90deg,
-    #1a1a2e 0px,
-    #1a1a2e 4px,
-    transparent 4px,
-    transparent 8px
-  );
-  opacity:0.3;
-}
-.hall-tc{width:4px;height:60px;left:320px;top:130px;transform:rotate(25deg)}
-.hall-tm{width:4px;height:60px;left:540px;top:130px;transform:rotate(-25deg)}
-.hall-cb{width:4px;height:60px;left:320px;top:350px;transform:rotate(-25deg)}
-.hall-kb{width:4px;height:60px;left:540px;top:350px;transform:rotate(25deg)}
 </style>
 </head>
 <body>
-
-<!-- ══════════ MAIN SCENE ══════════ -->
-<div id="scene">
-  <div id="iso-grid">
-    <!-- Hallway connectors -->
-    <div class="hallway hall-tc"></div>
-    <div class="hallway hall-tm"></div>
-    <div class="hallway hall-cb"></div>
-    <div class="hallway hall-kb"></div>
-
-    <!-- TRADING FLOOR -->
-    <div class="room room--trading" data-room="market">
-      <div class="room-tooltip" id="tip-market"></div>
-      <div class="room-label">
-        <div class="room-name">Trading Floor</div>
-        <span class="room-badge badge-active" id="badge-market">ACTIVE</span>
-      </div>
-      <div class="room-floor"></div>
-      <div class="furniture">
-        <div class="pixel-desk furn-desk1"></div>
-        <div class="pixel-desk furn-desk2"></div>
-        <div class="pixel-monitor furn-mon1"></div>
-        <div class="pixel-monitor furn-mon2"></div>
-        <div class="pixel-monitor furn-mon3"></div>
-      </div>
-      <div class="room-summary" id="sum-market">—</div>
-    </div>
-
-    <!-- MACHINE SHOP -->
-    <div class="room room--machine" data-room="pulseforge">
-      <div class="room-tooltip" id="tip-pulseforge"></div>
-      <div class="room-label">
-        <div class="room-name">Machine Shop</div>
-        <span class="room-badge badge-active" id="badge-pulseforge">ACTIVE</span>
-      </div>
-      <div class="room-floor"></div>
-      <div class="furniture">
-        <div class="pixel-desk furn-bench"></div>
-        <div class="furn-printer"></div>
-      </div>
-      <div class="room-summary" id="sum-pulseforge">—</div>
-    </div>
-
-    <!-- COMMAND CENTER -->
-    <div class="room room--command" data-room="engine">
-      <div class="room-tooltip" id="tip-engine"></div>
-      <div class="room-label">
-        <div class="room-name">Command Center</div>
-        <span class="room-badge badge-active" id="badge-engine">ACTIVE</span>
-      </div>
-      <div class="room-floor"></div>
-      <div class="furniture">
-        <div class="pixel-desk furn-desk1"></div>
-        <div class="pixel-monitor furn-mon1"></div>
-        <div class="pixel-monitor furn-mon2"></div>
-      </div>
-      <div class="room-summary" id="sum-engine">—</div>
-    </div>
-
-    <!-- COMMS ROOM -->
-    <div class="room room--comms" data-room="comms">
-      <div class="room-tooltip" id="tip-comms"></div>
-      <div class="room-label">
-        <div class="room-name">Comms Room</div>
-        <span class="room-badge badge-active" id="badge-comms">ACTIVE</span>
-      </div>
-      <div class="room-floor"></div>
-      <div class="furniture">
-        <div class="pixel-desk furn-desk1"></div>
-        <div class="pixel-monitor furn-mon1"></div>
-        <div class="furn-antenna"></div>
-      </div>
-      <div class="room-summary" id="sum-comms">—</div>
-    </div>
-
-    <!-- KIDWATCH ROOM -->
-    <div class="room room--kidwatch" data-room="kidwatch">
-      <div class="room-tooltip" id="tip-kidwatch"></div>
-      <div class="room-label">
-        <div class="room-name">KidWatch Room</div>
-        <span class="room-badge badge-idle" id="badge-kidwatch">IDLE</span>
-      </div>
-      <div class="room-floor"></div>
-      <div class="furniture">
-        <div class="pixel-desk furn-desk1"></div>
-        <div class="pixel-monitor furn-mon1"></div>
-        <div class="furn-shield"></div>
-      </div>
-      <div class="room-summary" id="sum-kidwatch">—</div>
-    </div>
-
-    <!-- FOX CHARACTER -->
-    <div id="fox">
-      <div id="fox-sprite">
-        <div class="fox-grid" id="fox-pixels"></div>
-      </div>
-    </div>
-  </div>
+<div id="wrap">
+  <canvas id="c" width="900" height="600"></canvas>
+  <div id="tooltip"></div>
 </div>
-
-<!-- ══════════ BOTTOM HUD ══════════ -->
-<div id="hud">
-  <div id="hud-left">
-    LUKA HQ <span class="blink-cursor">▮</span>
-  </div>
-
-  <div id="hud-center">
-    <!-- HP Bar (P&L) -->
-    <div class="hud-bar">
-      <span class="hud-bar-label">HP</span>
-      <div class="hud-bar-track">
-        <div class="hud-bar-fill" id="hp-fill" style="background:#4ade80"></div>
-      </div>
-      <span class="hud-bar-value" id="hp-value">P&L: --</span>
-    </div>
-
-    <!-- MP Bar (VIX) -->
-    <div class="hud-bar">
-      <span class="hud-bar-label">MP</span>
-      <div class="hud-bar-track">
-        <div class="hud-bar-fill" id="mp-fill" style="background:#fbbf24"></div>
-      </div>
-      <span class="hud-bar-value" id="mp-value">VIX: 25.54</span>
-    </div>
-
-    <!-- Market Open/Closed -->
-    <div id="market-status">—</div>
-  </div>
-
-  <div id="hud-right">
-    <a class="hud-link hud-link-lf" href="https://appforgelabs.github.io/LukaFund/" target="_blank">📊 LukaFund</a>
-    <a class="hud-link hud-link-pf" href="https://appforgelabs.github.io/PulseForge/" target="_blank">📡 PulseForge</a>
-    <a class="hud-link hud-link-kw" href="https://appforgelabs.github.io/KidWatch/" target="_blank">🎬 KidWatch</a>
-    <a class="hud-link hud-link-st" href="https://appforgelabs.github.io/ShouldIBeTrading/" target="_blank">⚡ SIBT</a>
-    <div id="hud-time">--</div>
-  </div>
-</div>
-
 <script>
-// ══════════ FOX PIXEL ART (16x16) ══════════
-// x=transparent, o=orange, d=dark orange, w=white, e=dark, n=nose, g=goggle, t=tail, l=tail tip
-const FOX_MAP = [
-  'xxxxxxxxxxxxxxxx',
-  'xxxexxxxxxxxxxxx',
-  'xxeeoxxxxxxxxxxx',
-  'xeooooxxxxxxxxxx',
-  'xeooooggoxxxxxxx',
-  'xxoooggoooxxxxxx',
-  'xxooenooooxxxxxx',
-  'xxxowwoooxxxxxxx',
-  'xxxowwooooxxxxxx',
-  'xxxxoooooodxxxxx',
-  'xxxxooooodddxxxx',
-  'xxxxwwwwxdttxxxx',
-  'xxxxooooxxttlxxx',
-  'xxxooxxooxtllxxx',
-  'xxxoxxxxoxxlxxxx',
-  'xxxxxxxxxxxxxxxx',
+// ══════════ CONSTANTS ══════════
+const W = 900, H = 600;
+const TW = 64, TH = 32; // tile width/height (2:1 iso)
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const tooltip = document.getElementById('tooltip');
+const wrap = document.getElementById('wrap');
+
+// Responsive scaling
+function fitCanvas() {
+  const s = Math.min(window.innerWidth / W, window.innerHeight / H, 1);
+  wrap.style.transform = 'scale(' + s + ')';
+  wrap.style.transformOrigin = 'center center';
+}
+window.addEventListener('resize', fitCanvas);
+fitCanvas();
+
+// ══════════ ISO MATH ══════════
+const OX = 450, OY = 80; // offset to center the grid
+
+function isoToScreen(col, row) {
+  return {
+    x: (col - row) * (TW / 2) + OX,
+    y: (col + row) * (TH / 2) + OY
+  };
+}
+
+// ══════════ DRAW CUBE ══════════
+function drawCube(sx, sy, tw, th, h, topColor, leftColor, rightColor) {
+  // TOP face
+  ctx.beginPath();
+  ctx.moveTo(sx, sy);
+  ctx.lineTo(sx + tw/2, sy - th/2);
+  ctx.lineTo(sx + tw, sy);
+  ctx.lineTo(sx + tw/2, sy + th/2);
+  ctx.closePath();
+  ctx.fillStyle = topColor; ctx.fill();
+  ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 0.5; ctx.stroke();
+
+  if (h > 0) {
+    // LEFT face
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(sx + tw/2, sy + th/2);
+    ctx.lineTo(sx + tw/2, sy + th/2 + h);
+    ctx.lineTo(sx, sy + h);
+    ctx.closePath();
+    ctx.fillStyle = leftColor; ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 0.5; ctx.stroke();
+
+    // RIGHT face
+    ctx.beginPath();
+    ctx.moveTo(sx + tw, sy);
+    ctx.lineTo(sx + tw/2, sy + th/2);
+    ctx.lineTo(sx + tw/2, sy + th/2 + h);
+    ctx.lineTo(sx + tw, sy + h);
+    ctx.closePath();
+    ctx.fillStyle = rightColor; ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 0.5; ctx.stroke();
+  }
+}
+
+// Draw a smaller cube within a tile (for furniture)
+function drawSmallCube(sx, sy, fw, fh, h, topC, leftC, rightC) {
+  // fw, fh are fractions of TW, TH
+  const tw = TW * fw, th = TH * fh;
+  ctx.beginPath();
+  ctx.moveTo(sx, sy);
+  ctx.lineTo(sx + tw/2, sy - th/2);
+  ctx.lineTo(sx + tw, sy);
+  ctx.lineTo(sx + tw/2, sy + th/2);
+  ctx.closePath();
+  ctx.fillStyle = topC; ctx.fill();
+  ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 0.5; ctx.stroke();
+
+  if (h > 0) {
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(sx + tw/2, sy + th/2);
+    ctx.lineTo(sx + tw/2, sy + th/2 + h);
+    ctx.lineTo(sx, sy + h);
+    ctx.closePath();
+    ctx.fillStyle = leftC; ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 0.5; ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(sx + tw, sy);
+    ctx.lineTo(sx + tw/2, sy + th/2);
+    ctx.lineTo(sx + tw/2, sy + th/2 + h);
+    ctx.lineTo(sx + tw, sy + h);
+    ctx.closePath();
+    ctx.fillStyle = rightC; ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 0.5; ctx.stroke();
+  }
+}
+
+// ══════════ ROOM DEFINITIONS ══════════
+const ROOMS = {
+  market: {
+    label: 'Trading Floor', col: 0, row: 0, size: 4,
+    floor: '#c8a96e', floorDark: '#b89a5e',
+    wallTop: '#2d5a3d', wallLeft: '#1d3d29', wallRight: '#162e1f',
+    accent: '#4ade80', key: 'market'
+  },
+  machine: {
+    label: 'Machine Shop', col: 6, row: 0, size: 4,
+    floor: '#b5935a', floorDark: '#a5834a',
+    wallTop: '#7c4a1a', wallLeft: '#5a3512', wallRight: '#3d2409',
+    accent: '#fb923c', key: 'pulseforge'
+  },
+  command: {
+    label: 'Command Center', col: 3, row: 3, size: 4,
+    floor: '#d4b896', floorDark: '#c4a886',
+    wallTop: '#6b1a2a', wallLeft: '#4a1219', wallRight: '#2e0b10',
+    accent: '#f87171', key: 'engine'
+  },
+  comms: {
+    label: 'Comms Room', col: 0, row: 6, size: 4,
+    floor: '#9eb8c8', floorDark: '#8ea8b8',
+    wallTop: '#1a3a5c', wallLeft: '#122840', wallRight: '#0c1d2e',
+    accent: '#60a5fa', key: 'comms'
+  },
+  kidwatch: {
+    label: 'KidWatch Room', col: 6, row: 6, size: 4,
+    floor: '#c8a0d4', floorDark: '#b890c4',
+    wallTop: '#4a1a6b', wallLeft: '#32124a', wallRight: '#210b30',
+    accent: '#c084fc', key: 'kidwatch'
+  }
+};
+
+// Room screen-space bounding boxes (computed once)
+const roomBounds = {};
+
+function computeRoomBounds() {
+  for (const [name, room] of Object.entries(ROOMS)) {
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (let r = 0; r < room.size; r++) {
+      for (let c = 0; c < room.size; c++) {
+        const p = isoToScreen(room.col + c, room.row + r);
+        minX = Math.min(minX, p.x);
+        maxX = Math.max(maxX, p.x + TW);
+        minY = Math.min(minY, p.y - TH/2);
+        maxY = Math.max(maxY, p.y + TH/2 + 48);
+      }
+    }
+    roomBounds[name] = { x: minX, y: minY, w: maxX - minX, h: maxY - minY, cx: (minX+maxX)/2, cy: (minY+maxY)/2 };
+  }
+}
+computeRoomBounds();
+
+// ══════════ FOX SPRITE (16x16 pixel map) ══════════
+const FOX_PIXELS = [
+  [0,0,0,0,0,3,3,0,0,3,3,0,0,0,0,0],
+  [0,0,0,0,3,1,1,3,3,1,1,3,0,0,0,0],
+  [0,0,0,3,1,1,1,1,1,1,1,1,3,0,0,0],
+  [0,0,3,1,1,1,1,1,1,1,1,1,1,3,0,0],
+  [0,3,1,1,2,4,4,1,1,4,4,2,1,1,3,0],
+  [0,3,1,1,4,4,4,1,1,4,4,4,1,1,3,0],
+  [0,3,1,1,2,4,4,1,1,4,4,2,1,1,3,0],
+  [0,0,3,1,1,1,1,1,1,1,1,1,1,3,0,0],
+  [0,0,3,1,1,2,2,2,2,2,2,1,1,3,0,0],
+  [0,0,0,3,1,2,2,3,3,2,2,1,3,0,0,0],
+  [0,0,0,0,3,3,1,1,1,1,3,3,0,0,0,0],
+  [0,0,0,3,1,1,1,5,5,1,1,1,3,0,0,0],
+  [0,0,3,1,1,1,2,2,2,2,1,1,1,3,0,0],
+  [0,3,1,1,1,2,2,2,2,2,2,1,1,1,3,0],
+  [0,3,1,3,3,1,1,1,1,1,1,3,3,1,3,0],
+  [0,3,3,0,0,3,1,1,1,1,3,0,0,3,3,0],
 ];
-const COLOR_MAP = {
-  x:'f-x', o:'f-o', d:'f-d', w:'f-w', e:'f-e',
-  n:'f-n', g:'f-g', t:'f-t', l:'f-l'
+const FOX_COLORS = {
+  0: null, 1: '#f97316', 2: '#fafafa', 3: '#1a0a00', 4: '#fbbf24', 5: '#d97706'
 };
-const foxEl = document.getElementById('fox-pixels');
-FOX_MAP.forEach(row => {
-  [...row].forEach(c => {
-    const px = document.createElement('div');
-    px.className = 'fp ' + (COLOR_MAP[c] || 'f-x');
-    foxEl.appendChild(px);
+
+function drawFox(x, y, bobOffset) {
+  const scale = 3;
+  const startX = x - 24; // center the 48px sprite
+  const startY = y - 48 + bobOffset;
+  for (let r = 0; r < 16; r++) {
+    for (let c = 0; c < 16; c++) {
+      const color = FOX_COLORS[FOX_PIXELS[r][c]];
+      if (color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(startX + c * scale, startY + r * scale, scale, scale);
+      }
+    }
+  }
+}
+
+// ══════════ FOX MOVEMENT ══════════
+const roomNames = Object.keys(ROOMS);
+let foxCurrent = { x: roomBounds.command.cx, y: roomBounds.command.cy };
+let foxTarget = { x: foxCurrent.x, y: foxCurrent.y };
+let foxRoom = 'command';
+let foxMoveStart = 0;
+const FOX_MOVE_DURATION = 1500; // ms
+let roomFlashAlpha = 0;
+let flashRoom = '';
+
+function pickNewFoxTarget() {
+  const others = roomNames.filter(n => n !== foxRoom);
+  const next = others[Math.floor(Math.random() * others.length)];
+  foxTarget = { x: roomBounds[next].cx, y: roomBounds[next].cy };
+  foxRoom = next;
+  foxMoveStart = performance.now();
+  roomFlashAlpha = 0.3;
+  flashRoom = next;
+}
+
+setInterval(pickNewFoxTarget, 4000);
+
+function lerpFox(now) {
+  const t = Math.min((now - foxMoveStart) / FOX_MOVE_DURATION, 1);
+  const ease = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; // easeInOutQuad
+  foxCurrent.x = foxCurrent.x + (foxTarget.x - foxCurrent.x) * ease * 0.1;
+  foxCurrent.y = foxCurrent.y + (foxTarget.y - foxCurrent.y) * ease * 0.1;
+  // Snap if close
+  if (Math.abs(foxCurrent.x - foxTarget.x) < 0.5) foxCurrent.x = foxTarget.x;
+  if (Math.abs(foxCurrent.y - foxTarget.y) < 0.5) foxCurrent.y = foxTarget.y;
+}
+
+// ══════════ DRAW ROOMS ══════════
+function drawFloor(room, flashAlpha) {
+  for (let r = 0; r < room.size; r++) {
+    for (let c = 0; c < room.size; c++) {
+      const p = isoToScreen(room.col + c, room.row + r);
+      const checker = (r + c) % 2 === 0 ? room.floor : room.floorDark;
+      drawCube(p.x, p.y, TW, TH, 0, checker, checker, checker);
+    }
+  }
+  // Flash effect
+  if (flashAlpha > 0) {
+    ctx.save();
+    ctx.globalAlpha = flashAlpha;
+    for (let r = 0; r < room.size; r++) {
+      for (let c = 0; c < room.size; c++) {
+        const p = isoToScreen(room.col + c, room.row + r);
+        drawCube(p.x, p.y, TW, TH, 0, '#ffffff', '#ffffff', '#ffffff');
+      }
+    }
+    ctx.restore();
+  }
+}
+
+function drawWalls(room) {
+  const wallH = 48;
+  // Back wall (north edge) — along row = room.row, all cols
+  for (let c = 0; c < room.size; c++) {
+    const p = isoToScreen(room.col + c, room.row);
+    drawCube(p.x, p.y - wallH, TW, TH, wallH, room.wallTop, room.wallLeft, room.wallRight);
+  }
+  // Side wall (west edge) — along col = room.col, all rows
+  for (let r = 0; r < room.size; r++) {
+    const p = isoToScreen(room.col, room.row + r);
+    drawCube(p.x, p.y - wallH, TW, TH, wallH, room.wallTop, room.wallLeft, room.wallRight);
+  }
+}
+
+// ══════════ FURNITURE DRAWING ══════════
+function drawFurnitureForRoom(roomName) {
+  const room = ROOMS[roomName];
+  const base = (c, r) => isoToScreen(room.col + c, room.row + r);
+
+  if (roomName === 'market') {
+    // Trading desk 2x1 at (1,2)
+    let p = base(1, 2);
+    drawSmallCube(p.x + 8, p.y - 20, 1.5, 1.5, 20, '#5c4a32', '#3d3222', '#2e2418');
+    // Monitor on desk
+    drawSmallCube(p.x + 20, p.y - 20 - 24, 0.6, 0.6, 24, '#00ffaa', '#2a2a2a', '#1a1a1a');
+    // Second monitor
+    p = base(2, 2);
+    drawSmallCube(p.x + 12, p.y - 20 - 24, 0.6, 0.6, 24, '#00ff88', '#2a2a2a', '#1a1a1a');
+    // Server rack at (3,1)
+    p = base(3, 1);
+    drawSmallCube(p.x + 8, p.y - 48, 0.8, 0.8, 48, '#3a3a3a', '#2a2a2a', '#1e1e1e');
+    // Blinking LED on server
+    if (Math.floor(performance.now() / 800) % 2 === 0) {
+      ctx.fillStyle = '#4ade80';
+      ctx.fillRect(p.x + 28, p.y - 20, 3, 3);
+    }
+  }
+
+  if (roomName === 'machine') {
+    // 3D printer at (1,1)
+    let p = base(1, 1);
+    drawSmallCube(p.x + 10, p.y - 36, 0.9, 0.9, 36, '#e0e0e0', '#b0b0b0', '#808080');
+    // Print bed accent
+    drawSmallCube(p.x + 18, p.y - 36 - 4, 0.4, 0.4, 4, '#00e5ff', '#008899', '#005566');
+    // Workbench at (1,2) 2x1
+    p = base(1, 2);
+    drawSmallCube(p.x + 6, p.y - 20, 1.6, 1.3, 20, '#6b5030', '#4a3820', '#362810');
+    // Tool rack on back wall at (2,0)
+    p = base(2, 0);
+    drawSmallCube(p.x + 10, p.y - 48 - 8, 0.7, 0.7, 8, '#555555', '#3a3a3a', '#2a2a2a');
+  }
+
+  if (roomName === 'command') {
+    // Central console 2x2 at (1,1)
+    let p = base(1, 1);
+    drawSmallCube(p.x - 4, p.y - 24, 1.8, 1.8, 24, '#3a3a44', '#2a2a30', '#1e1e24');
+    // Glowing screen on console
+    drawSmallCube(p.x + 8, p.y - 24 - 6, 1.0, 1.0, 6, '#ff4444', '#880000', '#550000');
+    // Left terminal at (0,2)
+    p = base(0, 2);
+    drawSmallCube(p.x + 16, p.y - 32, 0.7, 0.7, 32, '#ff6666', '#2a2a2a', '#1a1a1a');
+    // Right terminal at (3,1)
+    p = base(3, 1);
+    drawSmallCube(p.x + 8, p.y - 32, 0.7, 0.7, 32, '#ff6666', '#2a2a2a', '#1a1a1a');
+  }
+
+  if (roomName === 'comms') {
+    // Broadcast antenna at (3,1) — tall tower
+    let p = base(3, 1);
+    drawSmallCube(p.x + 16, p.y - 64, 0.4, 0.4, 64, '#4488bb', '#2a5577', '#1a3344');
+    // Blinking light on antenna
+    if (Math.floor(performance.now() / 1000) % 2 === 0) {
+      ctx.fillStyle = '#ff3333';
+      ctx.fillRect(p.x + 24, p.y - 68, 4, 4);
+    } else {
+      ctx.fillStyle = '#661111';
+      ctx.fillRect(p.x + 24, p.y - 68, 4, 4);
+    }
+    // Radio desk at (1,2) 2x1
+    p = base(1, 2);
+    drawSmallCube(p.x + 6, p.y - 20, 1.5, 1.3, 20, '#5c4a32', '#3d3222', '#2e2418');
+    // Discord monitor at (2,2)
+    p = base(2, 2);
+    drawSmallCube(p.x + 14, p.y - 20 - 28, 0.6, 0.6, 28, '#5865F2', '#2a2a5a', '#1a1a3a');
+  }
+
+  if (roomName === 'kidwatch') {
+    // TV/monitor at (1,1) 2x1
+    let p = base(1, 1);
+    drawSmallCube(p.x + 4, p.y - 32, 1.6, 1.0, 32, '#bb66ff', '#3a2a4a', '#2a1a3a');
+    // Beanbag at (1,2) 2x2 low
+    p = base(1, 2);
+    drawSmallCube(p.x + 2, p.y - 12, 1.6, 1.6, 12, '#9966cc', '#7744aa', '#553388');
+    // Bookshelf at (3,0) against wall
+    p = base(3, 0);
+    drawSmallCube(p.x + 8, p.y - 48 - 10, 0.7, 1.2, 40, '#6b5030', '#4a3820', '#362810');
+  }
+}
+
+// ══════════ ROOM LABELS ══════════
+function drawRoomLabels() {
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  for (const [name, room] of Object.entries(ROOMS)) {
+    const b = roomBounds[name];
+    const labelY = b.y - 8;
+
+    // Room name
+    ctx.font = '7px "Press Start 2P", monospace';
+    ctx.fillStyle = room.accent;
+    ctx.fillText(room.label, b.cx, labelY);
+
+    // Status badge
+    const status = roomStatuses[room.key] || 'idle';
+    const badgeY = labelY + 14;
+    const badgeColor = status === 'active' ? '#4ade80' : status === 'error' ? '#f87171' : '#a3a3a3';
+    const pulseAlpha = status === 'active' ? 0.6 + 0.4 * Math.sin(performance.now() / 500) : 1;
+
+    ctx.save();
+    ctx.globalAlpha = pulseAlpha;
+    ctx.fillStyle = badgeColor;
+    ctx.beginPath();
+    ctx.arc(b.cx - 24, badgeY, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = '5px "Press Start 2P", monospace';
+    ctx.fillText(status.toUpperCase(), b.cx + 4, badgeY);
+    ctx.restore();
+  }
+}
+
+// ══════════ HUD OVERLAY ══════════
+const HUD_LINKS = [
+  { label: '📊 LukaFund', url: 'https://appforgelabs.github.io/LukaFund/' },
+  { label: '📡 PulseForge', url: 'https://appforgelabs.github.io/PulseForge/' },
+  { label: '🎬 KidWatch', url: 'https://appforgelabs.github.io/KidWatch/' },
+  { label: '⚡ SIBT', url: 'https://appforgelabs.github.io/ShouldIBeTrading/' },
+];
+const hudButtonBounds = [];
+
+function drawHUD() {
+  const hudY = H - 60;
+
+  // Dark background
+  ctx.fillStyle = '#0d0d1aee';
+  ctx.fillRect(0, hudY, W, 60);
+  ctx.strokeStyle = '#1a1a3a';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, hudY);
+  ctx.lineTo(W, hudY);
+  ctx.stroke();
+
+  // LUKA HQ title
+  ctx.font = '9px "Press Start 2P", monospace';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#f59e0b';
+  ctx.shadowColor = '#f59e0b66';
+  ctx.shadowBlur = 8;
+  const cursorVisible = Math.floor(performance.now() / 500) % 2 === 0;
+  ctx.fillText('LUKA HQ ' + (cursorVisible ? '▮' : ' '), 16, hudY + 20);
+  ctx.shadowBlur = 0;
+
+  // HP bar (P&L)
+  const hpX = 200, hpY = hudY + 10;
+  ctx.font = '5px "Press Start 2P", monospace';
+  ctx.fillStyle = '#94a3b8';
+  ctx.fillText('HP', hpX, hpY + 5);
+
+  // HP track
+  ctx.fillStyle = '#1a1a2e';
+  ctx.strokeStyle = '#2a2a4a';
+  ctx.lineWidth = 2;
+  ctx.fillRect(hpX + 24, hpY, 80, 10);
+  ctx.strokeRect(hpX + 24, hpY, 80, 10);
+
+  // HP fill
+  const hpPct = Math.min(Math.abs(pnlPercent) / 10 * 100, 100);
+  ctx.fillStyle = pnlPercent >= 0 ? '#4ade80' : '#f87171';
+  ctx.fillRect(hpX + 24, hpY, hpPct * 0.8, 10);
+
+  // HP value text
+  ctx.fillStyle = '#e2e8f0';
+  ctx.textAlign = 'left';
+  ctx.fillText('P&L: ' + (pnlPercent >= 0 ? '+' : '') + pnlPercent.toFixed(2) + '%', hpX + 110, hpY + 5);
+
+  // MP bar (VIX)
+  const mpX = 200, mpY = hudY + 28;
+  ctx.fillStyle = '#94a3b8';
+  ctx.fillText('MP', mpX, mpY + 5);
+
+  ctx.fillStyle = '#1a1a2e';
+  ctx.strokeStyle = '#2a2a4a';
+  ctx.fillRect(mpX + 24, mpY, 80, 10);
+  ctx.strokeRect(mpX + 24, mpY, 80, 10);
+
+  const mpPct = Math.min((vixValue / 80) * 100, 100);
+  ctx.fillStyle = vixValue < 20 ? '#4ade80' : vixValue < 25 ? '#fbbf24' : '#f87171';
+  ctx.fillRect(mpX + 24, mpY, mpPct * 0.8, 10);
+
+  ctx.fillStyle = '#e2e8f0';
+  ctx.fillText('VIX: ' + vixValue.toFixed(2), mpX + 110, mpY + 5);
+
+  // Market status badge
+  const mktOpen = isMarketOpen();
+  const mktX = 420, mktY = hudY + 16;
+  ctx.fillStyle = mktOpen ? '#16a34a33' : '#dc262633';
+  ctx.fillRect(mktX, mktY - 8, 100, 16);
+  ctx.strokeStyle = mktOpen ? '#16a34a88' : '#dc262688';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(mktX, mktY - 8, 100, 16);
+  ctx.fillStyle = mktOpen ? '#4ade80' : '#f87171';
+  ctx.textAlign = 'center';
+  ctx.font = '6px "Press Start 2P", monospace';
+  ctx.fillText(mktOpen ? 'MARKET OPEN' : 'MKT CLOSED', mktX + 50, mktY + 1);
+
+  // Link buttons
+  hudButtonBounds.length = 0;
+  const btnStartX = 560;
+  ctx.font = '6px "Press Start 2P", monospace';
+  ctx.textAlign = 'center';
+  HUD_LINKS.forEach((link, i) => {
+    const bx = btnStartX + i * 78;
+    const by = hudY + 10;
+    const bw = 72, bh = 18;
+    ctx.fillStyle = '#0d0d2a';
+    ctx.strokeStyle = '#2a2a4a';
+    ctx.lineWidth = 1;
+    ctx.fillRect(bx, by, bw, bh);
+    ctx.strokeRect(bx, by, bw, bh);
+    ctx.fillStyle = ['#4ade80','#fb923c','#c084fc','#fbbf24'][i];
+    ctx.fillText(link.label, bx + bw/2, by + bh/2 + 1);
+    hudButtonBounds.push({ x: bx, y: by, w: bw, h: bh, url: link.url });
   });
-});
 
-// ══════════ FOX POSITIONING ══════════
-const ROOM_CENTERS = {
-  market:    {left:190, top:100},
-  pulseforge:{left:630, top:100},
-  engine:    {left:410, top:270},
-  comms:     {left:190, top:440},
-  kidwatch:  {left:630, top:440},
-};
+  // Timestamp
+  ctx.font = '5px "Press Start 2P", monospace';
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#64748b';
+  ctx.fillText(timestampLabel, W - 16, hudY + 50);
+}
 
-const fox = document.getElementById('fox');
-// Start in command center
-fox.style.left = ROOM_CENTERS.engine.left + 'px';
-fox.style.top  = ROOM_CENTERS.engine.top + 'px';
+// ══════════ SCANLINES ══════════
+function drawScanlines() {
+  ctx.fillStyle = 'rgba(0,0,0,0.03)';
+  for (let y = 0; y < H; y += 4) {
+    ctx.fillRect(0, y, W, 2);
+  }
+}
 
-// Walk to random room on load, then back
-setTimeout(() => {
-  const rooms = Object.keys(ROOM_CENTERS).filter(r => r !== 'engine');
-  const dest = rooms[Math.floor(Math.random() * rooms.length)];
-  fox.style.left = ROOM_CENTERS[dest].left + 'px';
-  fox.style.top  = ROOM_CENTERS[dest].top + 'px';
-  setTimeout(() => {
-    fox.style.left = ROOM_CENTERS.engine.left + 'px';
-    fox.style.top  = ROOM_CENTERS.engine.top + 'px';
-  }, 3000);
-}, 1500);
-
-// ══════════ MARKET OPEN/CLOSED CHECK ══════════
+// ══════════ MARKET OPEN CHECK ══════════
 function isMarketOpen() {
   const now = new Date();
   const et = new Date(now.toLocaleString('en-US', {timeZone:'America/New_York'}));
   const day = et.getDay();
   if (day === 0 || day === 6) return false;
   const mins = et.getHours() * 60 + et.getMinutes();
-  return mins >= 570 && mins < 960; // 9:30 - 16:00
+  return mins >= 570 && mins < 960;
 }
 
-const mktEl = document.getElementById('market-status');
-if (isMarketOpen()) {
-  mktEl.textContent = 'MARKET OPEN';
-  mktEl.className = 'market-open';
-} else {
-  mktEl.textContent = 'MARKET CLOSED';
-  mktEl.className = 'market-closed';
-}
-
-// ══════════ VIX BAR — populated from status.json in applyStatus ══════════
-
-// ══════════ STATUS.JSON FETCH ══════════
-const FALLBACK = {
-  updated: '--',
-  rooms: {
-    market:    {status:'idle',summary:'No data'},
-    pulseforge:{status:'idle',summary:'No data'},
-    engine:    {status:'idle',summary:'No data'},
-    comms:     {status:'idle',summary:'No data'},
-    kidwatch:  {status:'idle',summary:'No data'},
-  }
-};
-
-const ROOM_KEY_MAP = {
-  market:'market', pulseforge:'pulseforge',
-  engine:'engine', comms:'comms', kidwatch:'kidwatch',
-  social:'comms'
-};
+// ══════════ DATA STATE ══════════
+let pnlPercent = 0;
+let vixValue = 25;
+let roomStatuses = {};
+let roomSummaries = {};
+let timestampLabel = '--';
 
 function applyStatus(data) {
   const rooms = data.rooms || {};
-  // Map room keys to display IDs
-  const displayMap = {
-    market:'market', pulseforge:'pulseforge',
-    engine:'engine', comms:'comms', kidwatch:'kidwatch'
-  };
-  // Handle social→comms alias
   if (rooms.social && !rooms.comms) rooms.comms = rooms.social;
 
-  Object.entries(displayMap).forEach(([key, id]) => {
-    const r = rooms[key];
-    if (!r) return;
-    // Badge
-    const badge = document.getElementById('badge-' + id);
-    if (badge) {
-      const s = (r.status || 'idle').toLowerCase();
-      badge.className = 'room-badge badge-' + s;
-      badge.textContent = s.toUpperCase();
-    }
-    // Summary
-    const sum = document.getElementById('sum-' + id);
-    if (sum) sum.textContent = r.summary || '—';
-    // Tooltip
-    const tip = document.getElementById('tip-' + id);
-    if (tip) tip.textContent = r.summary || '—';
-  });
+  for (const [key, r] of Object.entries(rooms)) {
+    roomStatuses[key] = (r.status || 'idle').toLowerCase();
+    roomSummaries[key] = r.summary || '—';
+  }
 
-  // Portfolio P&L from status.json
   if (data.portfolio) {
     const pct = parseFloat(data.portfolio.total_return_pct);
-    const hpEl = document.getElementById('hp-fill');
-    const hpVal = document.getElementById('hp-value');
-    if (!isNaN(pct)) {
-      const barPct = Math.min(Math.abs(pct) / 10 * 100, 100); // scale: 10% = full bar
-      hpEl.style.background = pct >= 0 ? '#4ade80' : '#f87171';
-      hpVal.textContent = 'P&L: ' + (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
-      setTimeout(() => { hpEl.style.width = barPct + '%'; }, 300);
-    }
+    if (!isNaN(pct)) pnlPercent = pct;
   }
 
-  // VIX from status.json
   if (data.vix !== undefined) {
-    const vixVal = parseFloat(data.vix);
-    const mpEl = document.getElementById('mp-fill');
-    const mpVal = document.getElementById('mp-value');
-    mpVal.textContent = 'VIX: ' + vixVal.toFixed(2);
-    mpEl.style.background = vixVal < 20 ? '#4ade80' : vixVal < 25 ? '#fbbf24' : '#f87171';
-    setTimeout(() => { mpEl.style.width = Math.min((vixVal / 80) * 100, 100) + '%'; }, 300);
+    vixValue = parseFloat(data.vix);
   }
 
-  // Timestamp + stale check
-  const timeEl = document.getElementById('hud-time');
   if (data.updated && data.updated !== '--') {
     const d = new Date(data.updated);
     const ago = Date.now() - d.getTime();
     const hrs = Math.floor(ago / 3600000);
     const mins = Math.floor((ago % 3600000) / 60000);
-    let label = hrs > 0 ? hrs + 'h ' + mins + 'm ago' : mins + 'm ago';
-    timeEl.textContent = label;
-    if (ago > 3600000) {
-      timeEl.classList.add('stale-warn');
-      timeEl.textContent += ' ⚠ STALE';
-    }
-  } else {
-    timeEl.textContent = 'NO DATA';
+    timestampLabel = hrs > 0 ? hrs + 'h ' + mins + 'm ago' : mins + 'm ago';
+    if (ago > 3600000) timestampLabel += ' ⚠ STALE';
   }
 }
 
 fetch('status.json?v=' + Date.now())
   .then(r => r.json())
   .then(applyStatus)
-  .catch(() => applyStatus(FALLBACK));
+  .catch(() => {});
 
-// ══════════ PORTFOLIO P&L — from status.json portfolio block ══════════
-// (wired in applyStatus below — no separate fetch needed)
+// ══════════ TOOLTIP / CLICK HANDLING ══════════
+function getCanvasPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = W / rect.width;
+  const scaleY = H / rect.height;
+  return {
+    x: (e.clientX - rect.left) * scaleX,
+    y: (e.clientY - rect.top) * scaleY
+  };
+}
+
+canvas.addEventListener('mousemove', function(e) {
+  const pos = getCanvasPos(e);
+  let hovered = null;
+
+  for (const [name, b] of Object.entries(roomBounds)) {
+    if (pos.x >= b.x && pos.x <= b.x + b.w && pos.y >= b.y && pos.y <= b.y + b.h) {
+      hovered = name;
+      break;
+    }
+  }
+
+  if (hovered) {
+    const room = ROOMS[hovered];
+    const summary = roomSummaries[room.key] || '—';
+    tooltip.innerHTML = '<b style="color:' + room.accent + '">' + room.label + '</b><br><br>' + summary;
+    tooltip.style.borderColor = room.accent + '66';
+    tooltip.style.display = 'block';
+
+    // Position tooltip relative to wrap div
+    const rect = canvas.getBoundingClientRect();
+    const wrapRect = wrap.getBoundingClientRect();
+    const sx = (e.clientX - wrapRect.left) * (W / rect.width);
+    const sy = (e.clientY - wrapRect.top) * (H / rect.height);
+    tooltip.style.left = Math.min(sx + 10, W - 270) + 'px';
+    tooltip.style.top = Math.max(sy - 60, 10) + 'px';
+  } else {
+    tooltip.style.display = 'none';
+  }
+});
+
+canvas.addEventListener('click', function(e) {
+  const pos = getCanvasPos(e);
+  // Check HUD buttons
+  for (const btn of hudButtonBounds) {
+    if (pos.x >= btn.x && pos.x <= btn.x + btn.w && pos.y >= btn.y && pos.y <= btn.y + btn.h) {
+      window.open(btn.url, '_blank');
+      return;
+    }
+  }
+});
+
+canvas.addEventListener('mouseleave', function() {
+  tooltip.style.display = 'none';
+});
+
+// ══════════ MAIN DRAW LOOP ══════════
+function draw(now) {
+  ctx.clearRect(0, 0, W, H);
+
+  // Lerp fox
+  lerpFox(now);
+
+  // Decay flash
+  if (roomFlashAlpha > 0) roomFlashAlpha -= 0.005;
+
+  // Draw order: back to front (top-left rooms first in iso)
+  // Sort rooms by (row + col) for proper painter's algorithm
+  const sortedRooms = Object.entries(ROOMS).sort((a, b) => {
+    const ar = a[1].row + a[1].col;
+    const br = b[1].row + b[1].col;
+    return ar - br;
+  });
+
+  // Pass 1: floors
+  for (const [name, room] of sortedRooms) {
+    const fa = (name === flashRoom) ? roomFlashAlpha : 0;
+    drawFloor(room, fa);
+  }
+
+  // Pass 2: walls and furniture (back to front within each room)
+  for (const [name, room] of sortedRooms) {
+    drawWalls(room);
+    drawFurnitureForRoom(name);
+  }
+
+  // Draw fox
+  const bobOffset = Math.sin(now / 200) * 2;
+  drawFox(foxCurrent.x, foxCurrent.y, bobOffset);
+
+  // Room labels (on top of everything except HUD)
+  drawRoomLabels();
+
+  // HUD
+  drawHUD();
+
+  // Scanlines
+  drawScanlines();
+
+  requestAnimationFrame(draw);
+}
+
+requestAnimationFrame(draw);
 </script>
 </body>
 </html>
