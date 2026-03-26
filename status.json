@@ -1,11 +1,17 @@
 {
-  "updated": "2026-03-24T20:00:00Z",
+  "updated": "2026-03-25T20:56:00-04:00",
+  "portfolio": {
+    "total_value": 9905.67,
+    "total_return_pct": -0.94,
+    "starting_capital": 10000.0
+  },
+  "vix": 25.54,
   "rooms": {
-    "market":    { "status": "active", "lastRun": "4:06 PM ET", "summary": "EOD wrap complete. Portfolio -0.89%. SOFI -$97, RIVN short +$14, TSLA +$19." },
-    "pulseforge":{ "status": "active", "lastRun": "6:00 PM ET", "summary": "Daily pipeline ran. SPY -0.40%. Data synced to GitHub Pages." },
-    "social":    { "status": "idle",   "lastRun": "9:14 AM ET", "summary": "X post sent: PLTR down 24% YTD — getting interesting." },
-    "kidwatch":  { "status": "idle",   "lastRun": "8:00 PM ET", "summary": "90 videos scanned. All clear. No flagged content." },
-    "engine":    { "status": "active", "lastRun": "ongoing",    "summary": "16 cron jobs scheduled and running. Heartbeat every 30 min." },
-    "comms":     { "status": "active", "lastRun": "4:06 PM ET", "summary": "EOD brief sent to #stock-market. 2 position decisions pending." }
+    "market":     { "status": "active", "lastRun": "4:20 PM ET", "summary": "EOD close. SPY +0.55%, VIX -5.23%. RIVN short +$34. SOFI drag -$166. HOOD +5% on $1.5B buyback." },
+    "pulseforge": { "status": "active", "lastRun": "6:00 PM ET", "summary": "Daily pipeline ran. SPY $656.75. Pulse score updated. Data synced to GitHub Pages." },
+    "social":     { "status": "active", "lastRun": "9:26 AM ET", "summary": "X post sent. HOOD catalyst research posted to #options-play. SawyerMerritt monitor clean." },
+    "kidwatch":   { "status": "idle",   "lastRun": "8:00 PM ET", "summary": "Last run timed out (600s). Scheduler will retry tonight. Previously: 90 videos, all clear." },
+    "engine":     { "status": "active", "lastRun": "ongoing",    "summary": "26 cron jobs scheduled. Heartbeat every 30 min. ShortCircuit context fixed today." },
+    "comms":      { "status": "active", "lastRun": "6:40 PM ET", "summary": "EOD brief + HOOD buyback analysis posted. Options scan delivery errors fixed (transient)." }
   }
 }
